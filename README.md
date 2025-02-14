@@ -1,1 +1,1 @@
-# SpaceInvaders Wiki
+# Space Invaders Wiki
