@@ -1,2 +1,1 @@
 # Space Invaders Wiki
-Hola
