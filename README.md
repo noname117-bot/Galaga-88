@@ -1,1 +1,1 @@
-# Galaga '88 Wiki
+# Galaga '90 Wiki
