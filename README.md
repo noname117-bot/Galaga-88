@@ -1,1 +1,1 @@
-# Space Invaders Wiki
+# Galaga '88 Wiki
