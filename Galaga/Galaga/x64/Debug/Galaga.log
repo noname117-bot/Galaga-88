@@ -1,4 +1,2 @@
-﻿  space.cpp
-C:\Users\monts\source\repos\C++\Galaga\space.cpp(6,48): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\source\repos\C++\Galaga\space.cpp(7,48): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-  Galaga.vcxproj -> C:\Users\monts\source\repos\C++\Galaga\x64\Debug\Galaga.exe
+﻿  game.cpp
+  Galaga.vcxproj -> C:\Users\montserratmc6\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
