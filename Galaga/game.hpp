@@ -2,7 +2,7 @@
 #include "space.hpp"
 
 class Game {
-	public:
+public:
 	Game();
 	~Game();
 	void Update();
