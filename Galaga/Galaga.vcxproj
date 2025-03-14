@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bullet..cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="space.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bullet.hpp" />
     <ClInclude Include="game.hpp" />
     <ClInclude Include="space.hpp" />
   </ItemGroup>
@@ -80,8 +82,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\monts\Downloads\raylib %281%29\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\monts\Downloads\raylib %281%29\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\montserratmc6\Downloads\raylib\raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\montserratmc6\Downloads\raylib\raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -121,7 +123,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\monts\Downloads\Raylib_Handout2\Project1\Project1\libraries\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\montserratmc6\Downloads\raylib\raylib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>

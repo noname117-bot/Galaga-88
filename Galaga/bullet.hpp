@@ -11,5 +11,5 @@ private:
 	Texture2D imagen;
 	Vector2 position;
 	int speed;
-	 
+
 };
