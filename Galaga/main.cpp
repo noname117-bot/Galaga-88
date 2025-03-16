@@ -1,9 +1,10 @@
 #include <iostream>
 using namespace std;
 #include <raylib.h>
-//#include "space.hpp"
 #include "game.hpp"
-#include "bullet.hpp"
+
+
+
 int main() {
 
 	 // color gris oscuro
@@ -24,9 +25,8 @@ int main() {
 		game.HandleInput(); 
 		game.Update();
 		BeginDrawing(); // dibuja un canva blanco( básicamente es la pantalla principal) 
-
+		
 		DrawTextureEx(background_image, position, 0.0f,scale,  WHITE); //dibujamos el fondo
-		/*spaceship.Draw()*/; // llama al metodo Draw de la clase Spaceship
 		game.Draw(); // llama al metodo Draw de la clase Game
 		EndDrawing();
     }

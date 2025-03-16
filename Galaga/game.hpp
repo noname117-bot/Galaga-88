@@ -9,6 +9,7 @@ class Game {
 	void Draw();
 	void HandleInput();
 private:
+	void DeleteInactiveBullet();
 	Spaceship spaceship;
 
 };

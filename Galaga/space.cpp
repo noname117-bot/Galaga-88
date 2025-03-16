@@ -5,6 +5,9 @@ Spaceship::Spaceship()
 	image = LoadTexture("resources/spaceship.png");
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 100;
+	lastFiretime = 0.0;
+	reloadTime = 1.0f;
+	bulletCount = 0;
 }
 Spaceship::~Spaceship()
 {
@@ -33,7 +36,20 @@ void Spaceship::MoveRight()
 }
 void Spaceship::FireLaser()
 {
+	if (bulletCount <2 && GetTime() - lastFiretime >= 0.20)// el 0.20 es la diferencia de segundos entre la primera y la segunda bala
+	{
+		if(IsKeyDown(KEY_X))
+		{
+			bullets.push_back(Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
+			bulletCount++;
+			lastFiretime = GetTime();
 
-	bullets.push_back(Bullet({ position.y + image.width / 2 - 2, position.y }, -3));
+		}
+	
+	}
 
+	if (bulletCount >= 2 && GetTime() - lastFiretime >= reloadTime)
+	{
+		bulletCount = 0;
+	}
 }

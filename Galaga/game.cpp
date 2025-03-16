@@ -1,4 +1,10 @@
 #include "game.hpp"
+#include<iostream>
+using  namespace std;
+#include "bullet.hpp"
+#include <vector>
+
+
 
 Game::Game()
 {
@@ -15,6 +21,7 @@ void Game::Update()
 	{
 		bullet.Update();
 	}
+	DeleteInactiveBullet();
 }
 
 void Game::Draw()
@@ -33,8 +40,24 @@ void Game::HandleInput()
 	else if (IsKeyDown(KEY_RIGHT)) {
 		spaceship.MoveRight();
 	}
-	else if (IsKeyDown(KEY_SPACE)) {
+	else if (IsKeyDown(KEY_X)) {
 		spaceship.FireLaser();
+	} 
+
+}
+
+void Game::DeleteInactiveBullet()
+{
+
+	for (auto it = spaceship.bullets.begin(); it != spaceship.bullets.end();)
+	{
+		if (!it->active)
+		{
+			it = spaceship.bullets.erase(it);
+		}
+		else {
+			++it;
+		}
 	}
 
 }
