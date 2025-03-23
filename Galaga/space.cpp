@@ -4,9 +4,9 @@ Spaceship::Spaceship()
 {
 	image = LoadTexture("resources/spaceship.png");
 	position.x = (GetScreenWidth() - image.width) / 2;
-	position.y = GetScreenHeight() - image.height - 100;
+	position.y = GetScreenHeight() - image.height - 150;
 	lastFiretime = 0.0;
-	reloadTime = 1.0f;
+	reloadTime = 0.05f;
 	bulletCount = 0;
 }
 Spaceship::~Spaceship()
@@ -19,7 +19,7 @@ void Spaceship::Draw()
 }	
 void Spaceship::MoveLeft()
 {
-	position.x -= 5;
+	position.x -= 3;
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -27,7 +27,7 @@ void Spaceship::MoveLeft()
 }
 void Spaceship::MoveRight()
 {
-	position.x += 5;
+	position.x += 3;
 	float scaleWidth = image.width * 4.0f;
 	if (position.x + scaleWidth > GetScreenWidth()) {
 		position.x = GetScreenWidth() - scaleWidth;
@@ -52,4 +52,17 @@ void Spaceship::FireLaser()
 	{
 		bulletCount = 0;
 	}
+}
+
+void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mismo tiempo
+{
+	if (IsKeyDown(KEY_LEFT)) {
+		MoveLeft();
+	}
+	if (IsKeyDown(KEY_RIGHT)) {
+		MoveRight();
+	}
+
+	// Disparo
+	FireLaser();
 }

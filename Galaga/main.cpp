@@ -2,7 +2,8 @@
 using namespace std;
 #include <raylib.h>
 #include "game.hpp"
-
+#include "space.hpp"
+#include "enemy.hpp"
 
 
 int main() {
@@ -19,7 +20,7 @@ int main() {
 	Vector2 position = { 0,0 }; //posicionamos el fondo en el centro
 
 	Game game; // crea un objeto de la clase Game	
-
+	
     while (WindowShouldClose()==false) {
 
 		game.HandleInput(); 
@@ -27,7 +28,9 @@ int main() {
 		BeginDrawing(); // dibuja un canva blanco( básicamente es la pantalla principal) 
 		
 		DrawTextureEx(background_image, position, 0.0f,scale,  WHITE); //dibujamos el fondo
+	
 		game.Draw(); // llama al metodo Draw de la clase Game
+	
 		EndDrawing();
     }
 

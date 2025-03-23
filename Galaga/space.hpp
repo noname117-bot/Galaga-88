@@ -12,6 +12,7 @@ public:
 	void MoveLeft(); // basic movements of the spaceship
 	void MoveRight();
 	void FireLaser();
+	void Update();
 
 	std::vector<Bullet> bullets;
 private:

@@ -16,7 +16,7 @@ Bullet::Bullet(Vector2 position, int speed)
 void Bullet::Draw() {
 
 	if (active)
-		DrawTextureEx(imagen, position, 0.0f, 3.5, WHITE);// imagen de la bala de la nave
+		DrawTextureEx(imagen, position, 0.0f, 4.0, WHITE);// imagen de la bala de la nave
 }
 
 void Bullet::Update()
