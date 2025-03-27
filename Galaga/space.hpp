@@ -21,6 +21,12 @@ private:
 	double lastFiretime;
 	double reloadTime; // tiempo en el que se vuelven a recargar las balas 
 	int bulletCount; // contador de balas
-	
+
+	Texture2D spriteSheet;
+	int frameWidth, frameHeight;
+	int currentFrame;
+	float frameTime, frameCounter;
+	bool animation;
+	int startX, startY;
 
 };

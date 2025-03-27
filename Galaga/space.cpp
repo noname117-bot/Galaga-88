@@ -2,12 +2,23 @@
 
 Spaceship::Spaceship()
 {
-	image = LoadTexture("resources/spaceship.png");
+	image = LoadTexture("resources/spaceship.png"); //nave original
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
 	lastFiretime = 0.0;
 	reloadTime = 0.05f;
 	bulletCount = 0;
+
+	//nave animacion entrada
+	spriteSheet = LoadTexture("resources/aparicion1-sheet.png");
+	frameWidth = 16;
+	frameHeight = 32;
+	currentFrame = 0;
+	frameTime = 0.2f; // Tiempo entre cada cambio de frame
+	frameCounter = 0.0f;
+	animation = false;
+	startY = 2;
+	startX = 2;
 }
 Spaceship::~Spaceship()
 {
@@ -15,7 +26,20 @@ Spaceship::~Spaceship()
 }
 void Spaceship::Draw()
 {
-	DrawTextureEx(image, position, 0.0f, 4.0f, WHITE); // draw the spaceship
+	if (!animation)
+	{
+		int frameX = startX + currentFrame * (frameWidth + 4); // 4 es la separación entre sprites
+
+		Rectangle sourceRect = { frameX, startY, frameWidth, frameHeight };
+		Rectangle destRect = { position.x, position.y, frameWidth * 4, frameHeight * 4 }; // Escalamos 4x
+
+		DrawTexturePro(spriteSheet, sourceRect, destRect, { 0, 0 }, 0.0f, WHITE);
+	}
+	else { // cuando la animacion finalice solo quedara la nave "original"
+		DrawTextureEx(image, position, 0.0f, 4.0f, WHITE); // draw the spaceship
+
+	}
+
 }	
 void Spaceship::MoveLeft()
 {
@@ -65,4 +89,21 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 
 	// Disparo
 	FireLaser();
+
+	if (!animation)
+	{
+		frameCounter += GetFrameTime();
+
+		if (frameCounter >= frameTime)
+		{
+			frameCounter = 0;
+			currentFrame++;
+
+			if (currentFrame >= 4) // Hay 4 frames después de la nave original
+			{
+				animation = true;
+				currentFrame = 3; // Se queda en el último frame
+			}
+		}
+	}
 }

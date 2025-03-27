@@ -4,6 +4,7 @@ using namespace std;
 #include "game.hpp"
 #include "space.hpp"
 #include "enemy.hpp"
+#include "Menu.hpp"
 
 
 int main() {
@@ -12,24 +13,47 @@ int main() {
 	int initWidth = 1024; // ancho de la pantalla
 	int initHeight = 928; // alto de la pantalla
 
-	InitWindow(initWidth, initHeight, "C++ Space Invaders ");
-	SetTargetFPS(60); // establece la cantidad de fotogramas por segundo
+	InitWindow(initWidth, initHeight, "Galaga ");
+	SetTargetFPS(60); 
+
 	
 	Texture2D background_image= LoadTexture("resources/bg_stage1_2.png");
+
+
+	
 	float scale = 4.0f; //aumentamos las dimensiones de la imagen de fondo
 	Vector2 position = { 0,0 }; //posicionamos el fondo en el centro
 
+
+
+
 	Game game; // crea un objeto de la clase Game	
+	Menu menu;
 	
     while (WindowShouldClose()==false) {
 
-		game.HandleInput(); 
-		game.Update();
-		BeginDrawing(); // dibuja un canva blanco( básicamente es la pantalla principal) 
+		if (!menu.SingleModeSelected())
+		{
+			menu.Update();
+		}
+		else
+		{
+			game.Update();
+		}
 		
-		DrawTextureEx(background_image, position, 0.0f,scale,  WHITE); //dibujamos el fondo
-	
-		game.Draw(); // llama al metodo Draw de la clase Game
+		BeginDrawing(); // dibuja un canva blanco( básicamente es la pantalla principal) 
+		ClearBackground(BLACK);
+
+		if (!menu.SingleModeSelected())
+		{
+			menu.Draw();
+		}
+		else
+		{
+			DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
+			game.Draw();
+		}
+
 	
 		EndDrawing();
     }

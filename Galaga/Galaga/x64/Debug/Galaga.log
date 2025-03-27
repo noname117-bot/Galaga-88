@@ -1,7 +1,6 @@
-﻿  game.cpp
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(80,11): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(82,16): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(85,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(88,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(91,18): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+﻿  Menu.cpp
+C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\Menu.hpp(1,13): warning C4081: se esperaba 'newline'; se encontró ';'
+  (compilando archivo de origen "Menu.cpp")
+  
+C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\Menu.cpp(58,45): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
   Galaga.vcxproj -> C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe

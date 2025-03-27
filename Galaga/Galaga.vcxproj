@@ -23,12 +23,14 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="space.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="game.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="space.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
