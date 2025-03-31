@@ -25,6 +25,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="space.cpp" />
+    <ClCompile Include="transicion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.hpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="game.hpp" />
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="space.hpp" />
+    <ClInclude Include="transicion.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -86,8 +88,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\monts\Downloads\raylib %281%29\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\monts\Downloads\raylib %281%29\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\montserratmc6\Downloads\raylib\raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\montserratmc6\Downloads\raylib\raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

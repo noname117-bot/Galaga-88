@@ -5,6 +5,8 @@ using namespace std;
 #include "space.hpp"
 #include "enemy.hpp"
 #include "Menu.hpp"
+#include "Transicion.hpp"
+
 
 
 int main() {
@@ -30,11 +32,23 @@ int main() {
 	Game game; // crea un objeto de la clase Game	
 	Menu menu;
 	
+	bool inTransition = false;
+	Transition transition;
+
     while (WindowShouldClose()==false) {
 
 		if (!menu.SingleModeSelected())
 		{
 			menu.Update();
+		}
+		else if (!inTransition)
+		{
+			inTransition = true;
+
+		}
+		else if (!transition.IsFinished())
+		{
+			transition.Update();
 		}
 		else
 		{
@@ -47,6 +61,10 @@ int main() {
 		if (!menu.SingleModeSelected())
 		{
 			menu.Draw();
+		}
+		else if (!transition.IsFinished())
+		{
+			transition.Draw();
 		}
 		else
 		{
