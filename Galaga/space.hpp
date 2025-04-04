@@ -14,6 +14,10 @@ public:
 	void FireLaser();
 	void Update();
 
+	// life
+	int Getlives();
+	void DrawLives();
+
 	std::vector<Bullet> bullets;
 private:
 	Texture2D image;
@@ -29,4 +33,7 @@ private:
 	bool animation;
 	int startX, startY;
 
-};
+	// life
+	int lives;
+	Texture2D livesTexture;
+};	

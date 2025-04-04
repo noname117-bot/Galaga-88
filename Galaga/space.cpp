@@ -19,10 +19,15 @@ Spaceship::Spaceship()
 	animation = false;
 	startY = 2;
 	startX = 2;
+
+	// Variable vida
+	lives = 2;
+	livesTexture = LoadTexture("resources/spaceship.png");
 }
 Spaceship::~Spaceship()
 {
 	UnloadTexture(image);
+	UnloadTexture(livesTexture);	
 }
 void Spaceship::Draw()
 {
@@ -41,7 +46,7 @@ void Spaceship::Draw()
 	}
 
 }	
-void Spaceship::MoveLeft()
+void Spaceship::MoveLeft()	
 {
 	position.x -= 3;
 	if (position.x < 0)
