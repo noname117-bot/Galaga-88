@@ -10,7 +10,10 @@ public:
 	Texture2D image;
 	int type;
 	Vector2 position;
-private:
 
-
+	bool entering;  // Indica si el enemigo está entrando desde los bordes
+	float angle;  // Ángulo para el movimiento circular
+	float radius;  // Radio del círculo para movimiento
+	float speed;   // Velocidad de movimiento
+	Vector2 target;  // Posición final después del círculo
 };

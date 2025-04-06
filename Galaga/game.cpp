@@ -1,97 +1,97 @@
 #include "game.hpp"
-#include<iostream>
-using  namespace std;
+#include "enemy.hpp"
 #include "bullet.hpp"
+#include <iostream>
 #include <vector>
-
-
 
 Game::Game()
 {
-	enemies = createEnemy();
+    enemies = createEnemy();  // Crea los enemigos
 }
 
 Game::~Game()
 {
-
 }
 
 void Game::Update()
 {
+    spaceship.Update();
+    for (auto& bullet : spaceship.bullets) {
+        bullet.Update();
+    }
 
-	spaceship.Update();
-	for (auto& bullet : spaceship.bullets)
-	{
-		bullet.Update();
-	}
-	DeleteInactiveBullet();
+    // Actualiza todos los enemigos
+    for (auto& enemy : enemies) {
+        enemy.Update();  // Actualiza la posición de cada enemigo
+    }
+
+    DeleteInactiveBullet();  // Elimina las balas inactivas
 }
 
 void Game::Draw()
 {
-	spaceship.Draw();
-	for (auto& bullet : spaceship.bullets) {
-		bullet.Draw();
-	}
+    spaceship.Draw();
+    for (auto& bullet : spaceship.bullets) {
+        bullet.Draw();
+    }
 
-	for(auto&enemies:enemies)
-	{
-		enemies.Draw();
-	}
-
+    // Dibuja a los enemigos
+    for (auto& enemy : enemies) {
+        enemy.Draw();  // Dibuja cada enemigo en su nueva posición
+    }
 }
 
 void Game::HandleInput()
 {
-	if (IsKeyDown(KEY_LEFT)) {
-		spaceship.MoveLeft();
-	}
-	else if (IsKeyDown(KEY_RIGHT)) {
-		spaceship.MoveRight();
-	}
-	else if (IsKeyDown(KEY_X)) {
-		spaceship.FireLaser();
-	} 
-
+    if (IsKeyDown(KEY_LEFT)) {
+        spaceship.MoveLeft();
+    }
+    else if (IsKeyDown(KEY_RIGHT)) {
+        spaceship.MoveRight();
+    }
+    else if (IsKeyDown(KEY_X)) {
+        spaceship.FireLaser();
+    }
 }
 
 void Game::DeleteInactiveBullet()
 {
-
-	for (auto it = spaceship.bullets.begin(); it != spaceship.bullets.end();)
-	{
-		if (!it->active)
-		{
-			it = spaceship.bullets.erase(it);
-		}
-		else {
-			++it;
-		}
-	}
-
+    for (auto it = spaceship.bullets.begin(); it != spaceship.bullets.end();)
+    {
+        if (!it->active)
+        {
+            it = spaceship.bullets.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 }
 
 std::vector<Enemy> Game::createEnemy()
 {
-	std::vector<Enemy>enemies;
-	for (int row = 0; row < 2; row++) // 2 filas de enemigos
-	{
-		
-		float y = 200 + row * 55; // Espaciado entre las filas. 
-		
-		float x_left = 600 + row * 50; // Posición de los enemigos en el extremo izquierdo
-		enemies.push_back(Enemy(1, { x_left, y }));
+    std::vector<Enemy> enemies;
 
-		float x_left2 = 650 + row * 50;  
-		enemies.push_back(Enemy(1, { x_left2, y }));
+    int screenWidth = 1024;
+    int centerX = screenWidth / 2;
+    float offsetX = centerX - 375;
 
-		float x_right = 100 - row * 50; // Posición de los enemigos en el extremo derecho
-		enemies.push_back(Enemy(1, { x_right, y }));
+    // Creamos enemigos en las posiciones iniciales
+    for (int row = 0; row < 2; row++) {
+        float y = 200 + row * 55;
 
-		float x_right2 = 150 - row * 50;  // Posición del segundo enemigo a la derecha
-		enemies.push_back(Enemy(1, { x_right2, y }));
-	}
+        float x_left = offsetX + 600 + row * 50;
+        enemies.push_back(Enemy(1, { x_left, y }));
 
+        float x_left2 = offsetX + 650 + row * 50;
+        enemies.push_back(Enemy(1, { x_left2, y }));
 
-	return enemies;
+        float x_right = offsetX + 100 - row * 50;
+        enemies.push_back(Enemy(1, { x_right, y }));
+
+        float x_right2 = offsetX + 150 - row * 50;
+        enemies.push_back(Enemy(1, { x_right2, y }));
+    }
+
+    return enemies;
 }

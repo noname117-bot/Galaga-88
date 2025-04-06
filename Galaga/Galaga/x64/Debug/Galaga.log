@@ -1,2 +1,4 @@
-﻿  transicion.cpp
-  Galaga.vcxproj -> C:\Users\montserratmc6\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+﻿  game.cpp
+C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(77,19): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\game.cpp(81,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  Galaga.vcxproj -> C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe

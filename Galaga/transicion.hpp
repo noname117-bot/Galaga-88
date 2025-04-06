@@ -3,8 +3,8 @@
 
 class Transition{
 private:
-	Texture2D background;
-	Texture2D spriteSheet;
+	Texture2D background1;
+	Texture2D shipSprite;
 	Texture2D spaceship;
 
 	Rectangle sourceRect;
@@ -18,6 +18,8 @@ private:
 	bool finished;
 	bool moving;
 	float delayTime;
+
+	bool  waitBeforeMoving;
 
 public:
 	Transition();
