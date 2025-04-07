@@ -9,6 +9,7 @@ public:
 	void Update();
 	void Draw();
 	void HandleInput();
+	int score;
 
 private:
 	void DeleteInactiveBullet();
