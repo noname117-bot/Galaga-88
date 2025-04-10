@@ -1,27 +1,34 @@
 #include "transicion.hpp"
 
 Transition::Transition() {
-    background1 = LoadTexture("resources/bg_startgame.png");
+    background1 = LoadTexture("resources/bg_startgame-sheet.png");
     spaceship = LoadTexture("resources/spaceship.png");
     shipSprite = LoadTexture("resources/aparicion1-sheet.png");
 
-    shipY = 800;  // La nave comienza fuera de la pantalla
+    backgroundY = 0.0f;
+    currentBackgroundFrame = 0;  // Comienza con el primer frame de fondo
+
+    shipY = 800;
     transitionTime = 0;
-    currentFrame = 3; // Empezamos desde el último frame (última imagen del spritesheet)
-    frameTime = 0.15f;  // Velocidad de animación
+    currentFrame = 3;  // Comienza en el último frame del spritesheet de la nave
+    frameTime = 0.15f;  // Velocidad de la animación de la nave
     frameCounter = 0;
+
+    backgroundFrameCounter = 0;
+    backgroundFrameTime = 1.0f;
     finished = false;
 
-    delayTime = 1.0f; // Tiempo de espera antes de mover la nave hacia arriba
+    delayTime = 1.0f;
     waitBeforeMoving = true;
 
-    // Configurar el primer frame del sprite de la nave
-    sourceRect = { currentFrame * (shipSprite.width / 4), 0.0f, static_cast<float>(shipSprite.width) / 4, static_cast<float>(shipSprite.height) };  // 4 frames en el spritesheet
+    currentPhase = 1;
+
+    sourceRect = { currentFrame * (shipSprite.width / 4), 0.0f, static_cast<float>(shipSprite.width) / 4, static_cast<float>(shipSprite.height) };  // 4 frames en el spritesheet de la nave
 }
 
-Transition::~Transition() {
+Transition::~Transition()
+{
     UnloadTexture(background1);
-
     UnloadTexture(spaceship);
     UnloadTexture(shipSprite);
 }
@@ -31,49 +38,76 @@ void Transition::Update() {
 
     transitionTime += GetFrameTime();
 
-    // Mueve la nave hacia arriba hasta el centro (usamos el sprite suelto para este movimiento)
-    if (waitBeforeMoving && transitionTime >= delayTime) {
-        waitBeforeMoving = false;  // Ya no esperamos más
-    }
 
-    if (!waitBeforeMoving) {
-        // Mueve la nave hacia arriba hasta el centro (usamos el sprite suelto para este movimiento)
-        if (shipY > 400) {
-            shipY -= 100 * GetFrameTime();  // Ajusta la velocidad si es necesario
+    backgroundFrameCounter += GetFrameTime();
+    if (backgroundFrameCounter >= backgroundFrameTime) {
+        backgroundFrameCounter = 0;
+        currentBackgroundFrame = static_cast<int> (currentBackgroundFrame + 1) % 2;
+    }
+    if (currentPhase == 1) {
+        if (transitionTime >= 2.0f) {
+            currentPhase = 2; 
         }
     }
+    else if (currentPhase == 2) 
+    {
+        shipY -= 250 * GetFrameTime();
+        if (shipY <= 400) {
+            shipY = 400; 
+            currentPhase = 3; 
+        }
+    }
+    else if (currentPhase == 3) {
+      
+        backgroundY += 200 * GetFrameTime();
 
-    // Después de 3 segundos, comienza la animación de la nave
-    if (transitionTime >= 3.0f && transitionTime < 5.0f) {
-        // Empieza la animación de desaparición después de un breve retraso
+      
+        if (backgroundY >= 300) {
+            currentPhase = 4;
+        }
+    }
+    else if (currentPhase == 4) {
+    
         frameCounter += GetFrameTime();
         if (frameCounter >= frameTime) {
             frameCounter = 0;
-            currentFrame--;
+            currentFrame--; 
 
-            // Si la animación de desaparición termina, marca como finalizado
+            
+            sourceRect.x = currentFrame * (shipSprite.width / 4);
+
+          
             if (currentFrame < 0) {
                 finished = true;
             }
-            sourceRect.x = currentFrame * (shipSprite.width / 4);  // Cambiar de frame en el sprite sheet
         }
+
+
+        backgroundY += 200 * GetFrameTime();
     }
 }
 
 void Transition::Draw() {
-    if (transitionTime < 2.5f) {
-        DrawTextureEx(background1, { 0, 0 }, 0.0f, 4.0, WHITE);  // Fondo de la estación espacial
-    }
 
-    // Dibuja el sprite de la nave separada durante los primeros 3 segundos
-    if (transitionTime < 3.0f) {
+    int widthPerFrame = background1.width / 2; 
+    Rectangle backgroundSourceRect = { currentBackgroundFrame * widthPerFrame, 0,  widthPerFrame,  background1.height  };
+
+    float backgroundScale = 4.0f;
+    float scaledWidth = widthPerFrame * backgroundScale;
+    float scaledHeight = background1.height * backgroundScale;
+    float backgroundX = (GetScreenWidth() - scaledWidth) / 2;
+
+
+    DrawTexturePro(background1, backgroundSourceRect, { 0, backgroundY, (float)GetScreenWidth(), (float)GetScreenHeight() },{ 0, 0 },0.0f,WHITE);
+
+    if (currentPhase <= 3) 
+    {
         float scale = 4.0;
-        DrawTextureEx(spaceship, { 512 - spaceship.width * scale / 2, shipY - spaceship.height * scale / 2 }, 0.0f, scale, WHITE);
+        DrawTextureEx(spaceship,{ 512 - spaceship.width * scale / 2, shipY - spaceship.height * scale / 2 },0.0f,scale,WHITE);
     }
-
-    // Después de 3 segundos, muestra la animación del sprite sheet
-    if (!finished && transitionTime >= 3.0f) {
-        DrawTexturePro(shipSprite, sourceRect, { 512, shipY, 128, 128 }, { 64, 64 }, 0, WHITE);
+    else if (currentPhase == 4 && !finished) 
+    {
+        DrawTexturePro(shipSprite, sourceRect,{ 512, shipY, 128, 128 }, { 64, 64 },0, WHITE);
     }
 }
 

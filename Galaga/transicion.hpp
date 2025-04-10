@@ -15,11 +15,17 @@ private:
 	float frameCounter;
 	float frameTime;
 
+	int backgroundFrameCounter;
+	int backgroundFrameTime;
+	int currentPhase;
+
 	bool finished;
 	bool moving;
 	float delayTime;
 
 	bool  waitBeforeMoving;
+	float backgroundY;
+	float currentBackgroundFrame;
 
 public:
 	Transition();

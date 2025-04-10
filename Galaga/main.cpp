@@ -5,6 +5,7 @@ using namespace std;
 #include "space.hpp"
 #include "enemy.hpp"
 #include "Menu.hpp"
+#include "UI.hpp"
 #include "Transicion.hpp"
 
 
@@ -31,6 +32,7 @@ int main() {
 
 	Game game; // crea un objeto de la clase Game	
 	Menu menu;
+	GameUI ui;
 	
 	bool inTransition = false;
 	Transition transition;
@@ -70,6 +72,7 @@ int main() {
 		{
 			DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
 			game.Draw();
+			ui.Draw();
 		}
 
 	
