@@ -14,6 +14,7 @@ public:
 	void FireLaser();
 	void Update();
 
+	Rectangle getRect();
 	// life
 	int Getlives();
 	void DrawLives();

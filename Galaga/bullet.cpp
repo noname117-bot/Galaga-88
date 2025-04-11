@@ -19,6 +19,19 @@ void Bullet::Draw() {
 		DrawTextureEx(imagen, position, 0.0f, 4.0, WHITE);// imagen de la bala de la nave
 }
 
+Rectangle Bullet::getRect()
+{
+	
+	Rectangle rect;
+	rect.x = position.x;
+	rect.y = position.y;
+	rect.width = 4;
+	rect.height = 15;
+	return rect;
+
+
+}
+
 void Bullet::Update()
 {
 	position.y += speed;

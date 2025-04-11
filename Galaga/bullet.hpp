@@ -7,6 +7,8 @@ public:
 	void Update();
 	void Draw();
 	bool active;
+
+	Rectangle getRect();
 private:
 	Texture2D imagen;
 	Vector2 position;

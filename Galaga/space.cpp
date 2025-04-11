@@ -48,7 +48,7 @@ void Spaceship::Draw()
 }	
 void Spaceship::MoveLeft()	
 {
-	position.x -= 3;
+	position.x -= 5;
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -56,7 +56,7 @@ void Spaceship::MoveLeft()
 }
 void Spaceship::MoveRight()
 {
-	position.x += 3;
+	position.x += 5;
 	float scaleWidth = image.width * 4.0f;
 	if (position.x + scaleWidth > GetScreenWidth()) {
 		position.x = GetScreenWidth() - scaleWidth;
@@ -111,4 +111,9 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 			}
 		}
 	}
+}
+
+Rectangle Spaceship::getRect()
+{
+	return { position.x, position.y,float(image.width), float(image.height) };
 }

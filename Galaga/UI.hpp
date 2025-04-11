@@ -12,7 +12,10 @@ public:
 
 private:
 	Texture2D score;
-	Texture2D numberSprites[10];
+	Texture2D life1;
+	Texture2D life2;
+	Texture2D level;
+
 	std::string currentScore;
 
 	void DrawScore();

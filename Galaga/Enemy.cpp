@@ -21,7 +21,7 @@ Enemy::Enemy(int type, Vector2 position)
 	entering = true;  // El enemigo empieza entrando desde los bordes
 	angle = 0.0f;     // Ángulo inicial
 	radius = 150.0f;  // Radio del círculo
-	speed = 1.0f;
+	speed = 0.5f;
 }
 
 void Enemy::Update()
@@ -62,4 +62,9 @@ void Enemy::Draw()
 int Enemy::GetType()
 {
 	return type;
+}
+
+Rectangle Enemy::getRect()
+{
+    return { position.x, position.y,float(image.width), float(image.height) };
 }

@@ -11,6 +11,9 @@ public:
 	int type;
 	Vector2 position;
 
+
+	Rectangle getRect();
+
 	bool entering;  // Indica si el enemigo está entrando desde los bordes
 	float angle;  // Ángulo para el movimiento circular
 	float radius;  // Radio del círculo para movimiento

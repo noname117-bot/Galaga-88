@@ -26,6 +26,8 @@ void Game::Update()
     }
 
     DeleteInactiveBullet();  // Elimina las balas inactivas
+
+    CheckForCollisions();
 }
 
 void Game::Draw()
@@ -52,6 +54,29 @@ void Game::HandleInput()
     else if (IsKeyDown(KEY_X)) {
         spaceship.FireLaser();
     }
+}
+
+void Game::CheckForCollisions()
+{
+
+    for (auto& bullet : spaceship.bullets)
+    {
+        auto it = enemies.begin();
+        while (it != enemies.end())
+        {
+            if (CheckCollisionRecs(it->getRect(), bullet.getRect()))
+            {
+                it = enemies.erase(it);
+                bullet.active = false;
+            }
+            else {
+                ++it;
+            }
+        }
+    }
+
+
+
 }
 
 void Game::DeleteInactiveBullet()

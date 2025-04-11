@@ -11,6 +11,7 @@ public:
 	void HandleInput();
 	int score;
 
+	void CheckForCollisions();
 private:
 	void DeleteInactiveBullet();
 	std::vector<Enemy> createEnemy();
