@@ -27,6 +27,8 @@ int main() {
 	float scale = 4.0f; //aumentamos las dimensiones de la imagen de fondo
 	Vector2 position = { 0,0 }; //posicionamos el fondo en el centro
 
+	float fadeAlpha = 1.0f;
+	bool FadingIn = false;
 
 
 
@@ -54,6 +56,18 @@ int main() {
 		}
 		else
 		{
+
+			if (!FadingIn)
+			{
+				FadingIn = true;
+
+			}
+
+			if (fadeAlpha > 0.0f)
+			{
+				fadeAlpha -= 0.7f * GetFrameTime();
+				if (fadeAlpha < 0.0f)fadeAlpha = 0.0f;
+			}
 			game.Update();
 		}
 		
@@ -73,6 +87,11 @@ int main() {
 			DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
 			game.Draw();
 			ui.Draw();
+
+			if (fadeAlpha > 0.0f)
+			{
+				DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, fadeAlpha));
+			}
 		}
 
 	

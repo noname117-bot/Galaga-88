@@ -11,6 +11,11 @@ public:
 	void HandleInput();
 	int score;
 
+	Texture2D scoreTextures[10];
+	Texture2D startSprite;  // Sprite para "START"
+	Texture2D stageSprite;  // Sprite para "STAGE 1"
+	float textTimer = 0.0f;
+
 	void CheckForCollisions();
 private:
 	void DeleteInactiveBullet();

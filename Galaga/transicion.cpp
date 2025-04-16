@@ -5,6 +5,8 @@ Transition::Transition() {
     spaceship = LoadTexture("resources/spaceship.png");
     shipSprite = LoadTexture("resources/aparicion1-sheet.png");
 
+    score = LoadTexture("resources/score_letters.png");
+
     backgroundY = 0.0f;
     currentBackgroundFrame = 0;  // Comienza con el primer frame de fondo
 
@@ -15,7 +17,7 @@ Transition::Transition() {
     frameCounter = 0;
 
     backgroundFrameCounter = 0;
-    backgroundFrameTime = 1.0f;
+    backgroundFrameTime = 0.9f;
     finished = false;
 
     delayTime = 1.0f;
@@ -41,8 +43,8 @@ void Transition::Update() {
 
     backgroundFrameCounter += GetFrameTime();
     if (backgroundFrameCounter >= backgroundFrameTime) {
-        backgroundFrameCounter = 0;
-        currentBackgroundFrame = static_cast<int> (currentBackgroundFrame + 1) % 2;
+        backgroundFrameCounter -= backgroundFrameTime;
+        currentBackgroundFrame = (currentBackgroundFrame + 1) % 2;
     }
     if (currentPhase == 1) {
         if (transitionTime >= 2.0f) {
@@ -109,6 +111,8 @@ void Transition::Draw() {
     {
         DrawTexturePro(shipSprite, sourceRect,{ 512, shipY, 128, 128 }, { 64, 64 },0, WHITE);
     }
+
+    DrawTextureEx(score, { 70, 30 }, 0.0f, 4.0f, WHITE);
 }
 
 bool Transition::IsFinished() const {

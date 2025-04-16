@@ -26,12 +26,12 @@ void GameUI::DrawScore() {
 
 	float scale = 4.0f;
 	
-	Vector2 position = { 70, 30 }; //score 
+	position = { 65, 30 }; //score 
 
-	Vector2 position1 = { 135, 860 }; //vida 1 
-	Vector2 position2 = { 70, 860 };//vida 2
+	position1 = { 135, 860 }; //vida 1 
+	position2 = { 70, 860 };//vida 2
 
-	Vector2 position3 = { 950, 860 };//nivel
+	position3 = { 950, 860 };//nivel
 
 
 	DrawTextureEx(score, position, 0.0f, scale, WHITE);
@@ -42,4 +42,10 @@ void GameUI::DrawScore() {
 	DrawTextureEx(level, position3, 0.0f, scale, WHITE);
 
 
+}
+
+
+Vector2 GameUI::GetScorePosition() const
+{
+	return position;
 }

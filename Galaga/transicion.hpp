@@ -7,6 +7,8 @@ private:
 	Texture2D shipSprite;
 	Texture2D spaceship;
 
+	Texture2D score;
+
 	Rectangle sourceRect;
 
 	float shipY;
@@ -15,9 +17,9 @@ private:
 	float frameCounter;
 	float frameTime;
 
-	int backgroundFrameCounter;
-	int backgroundFrameTime;
-	int currentPhase;
+	float backgroundFrameCounter;
+	float backgroundFrameTime;
+	float currentPhase;
 
 	bool finished;
 	bool moving;
@@ -25,7 +27,7 @@ private:
 
 	bool  waitBeforeMoving;
 	float backgroundY;
-	float currentBackgroundFrame;
+	int currentBackgroundFrame;
 
 public:
 	Transition();

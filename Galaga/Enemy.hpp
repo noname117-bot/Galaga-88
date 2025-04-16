@@ -1,22 +1,45 @@
 #pragma once
 #include <raylib.h>
 
+
+enum {
+	ENTERING = 0,
+	INFINITI = 1,
+	EXITING = 2,
+	FORMATION = 3
+};
+
+enum {
+	RED_PATH = 0,
+	ORANGE_PATH = 1
+};
+
 class Enemy {
 public:
-	Enemy(int type, Vector2 position);
-	void Update();
-	void Draw();
-	int GetType();
-	Texture2D image;
-	int type;
-	Vector2 position;
+    Enemy(int type, Vector2 position, int pathType, bool startFromLeft);
 
+    void Update();
+    void Draw();
+    int GetType();
+    Rectangle getRect();
 
-	Rectangle getRect();
+    // Variables públicas
+    int type;
+    void Activate(); // Activar el enemigo
+    bool IsActive(); // Verificar si está activo
+    bool IsInFormation();
 
-	bool entering;  // Indica si el enemigo está entrando desde los bordes
-	float angle;  // Ángulo para el movimiento circular
-	float radius;  // Radio del círculo para movimiento
-	float speed;   // Velocidad de movimiento
-	Vector2 target;  // Posición final después del círculo
+private:
+    Vector2 position;
+    Vector2 finalPosition;
+    int pathType;
+    bool startFromLeft;
+    int currentPhase;
+    float infinityProgress;
+    float moveSpeed;
+    Texture2D image;
+    bool active;
+    // Para el movimiento en formación
+    bool movingRight;
+    float formationMoveTimer;
 };

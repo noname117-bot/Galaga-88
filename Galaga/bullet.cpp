@@ -23,10 +23,10 @@ Rectangle Bullet::getRect()
 {
 	
 	Rectangle rect;
-	rect.x = position.x;
+	rect.x = position.x + (imagen.width * 4.0f * 0.25f);
 	rect.y = position.y;
-	rect.width = 4;
-	rect.height = 15;
+	rect.width = imagen.width * 4.0 * 0.5f;
+	rect.height = imagen.height * 4.0 * 0.8f;
 	return rect;
 
 

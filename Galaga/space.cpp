@@ -48,7 +48,7 @@ void Spaceship::Draw()
 }	
 void Spaceship::MoveLeft()	
 {
-	position.x -= 5;
+	position.x -= 6;
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -56,7 +56,7 @@ void Spaceship::MoveLeft()
 }
 void Spaceship::MoveRight()
 {
-	position.x += 5;
+	position.x += 6;
 	float scaleWidth = image.width * 4.0f;
 	if (position.x + scaleWidth > GetScreenWidth()) {
 		position.x = GetScreenWidth() - scaleWidth;
