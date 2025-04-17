@@ -2,7 +2,6 @@
 
 Spaceship::Spaceship()
 {
-	//snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
 	image = LoadTexture("resources/spaceship.png"); //nave original
 	position.x = (GetScreenWidth() - image.width) / 2;
@@ -25,14 +24,12 @@ Spaceship::Spaceship()
 	// Variable vida
 	lives = 2;
 	livesTexture = LoadTexture("resources/spaceship.png");
-	//PlaySound(snd_animation); // Reproducir el sonido de la animación
 }
 Spaceship::~Spaceship()
 {
 	UnloadSound(snd_bullet); // Unload sound
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);	
-	//UnloadSound(snd_animation);
 }
 void Spaceship::Draw()
 {

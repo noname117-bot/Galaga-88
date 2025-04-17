@@ -29,5 +29,4 @@ public:
 	void Draw();
 	bool SingleModeSelected();
 	Sound snd_selection;
-	//Sound snd_animation;
 };

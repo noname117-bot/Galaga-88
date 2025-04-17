@@ -24,7 +24,6 @@ Menu::Menu()
     sourceRect = { 0, 0, 256, 232 };
 
     snd_selection = LoadSound("resources/sound_effects/effect_selection.wav");
-    //snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 
 
 }
@@ -33,7 +32,6 @@ Menu::~Menu()
 {
     UnloadTexture(spriteSheet);
     UnloadTexture(spriteSheet2);
-	//UnloadSound(snd_animation);
 	UnloadSound(snd_selection); 
 }
 
@@ -49,8 +47,7 @@ void Menu::Update()
             currentFrame = 0;   
             cyclesCompleted = 0;
             frameCounter = 0;
-            PlaySound(snd_selection); // Reproducir el sonido del disparo
-			//PlaySound(snd_animation); // Reproducir el sonido de la animación
+            PlaySound(snd_selection); // Reproducir el sonido de la selección
         }
         else
         {

@@ -1,10 +1,38 @@
-﻿  transicion.cpp
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,63): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,63): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,84): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,84): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,111): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,111): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-  Galaga.vcxproj -> C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+﻿  Menu.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Menu.hpp(1,13): warning C4081: se esperaba 'newline'; se encontró ';'
+  (compilando archivo de origen "Menu.cpp")
+  
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Menu.cpp(10,25): warning C4305: '=': truncamiento de 'double' a 'float'
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Menu.cpp(63,45): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Menu.cpp(86,45): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+  game.cpp
+  main.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Menu.hpp(1,13): warning C4081: se esperaba 'newline'; se encontró ';'
+  (compilando archivo de origen "main.cpp")
+  
+  space.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(7,48): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(8,48): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,28): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,28): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,36): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,36): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,44): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,44): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,56): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(40,56): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(41,61): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(41,61): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(41,78): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\space.cpp(41,78): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  transicion.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,63): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,63): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,84): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,84): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,111): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\transicion.cpp(103,111): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  Generando código...
+  Galaga.vcxproj -> C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
   "pwsh.exe" no se reconoce como un comando interno o externo,
   programa o archivo por lotes ejecutable.

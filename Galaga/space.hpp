@@ -40,6 +40,4 @@ private:
 
 	// Sound
 	Sound snd_bullet;
-	//Sound snd_animation;
-
 };	

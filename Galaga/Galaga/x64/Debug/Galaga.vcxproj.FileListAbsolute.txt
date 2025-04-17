@@ -1,3 +1,6 @@
 C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\x64\Debug\raylib.dll
 C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\x64\Debug\glfw3.dll
 C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\Galaga\x64\Debug\Galaga.vcxproj.Up2Date
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\raylib.dll
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\glfw3.dll
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Galaga\x64\Debug\Galaga.vcxproj.Up2Date

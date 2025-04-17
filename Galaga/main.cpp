@@ -17,7 +17,6 @@ int main() {
 	InitWindow(initWidth, initHeight, "Galaga ");
 	SetTargetFPS(60); 
 	InitAudioDevice();
-	//Sound snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 	Texture2D background_image= LoadTexture("resources/bg_stage1_2.png");
 
 	
@@ -58,7 +57,6 @@ int main() {
 			if (!FadingIn)
 			{
 				FadingIn = true;
-				//PlaySound(snd_animation); // Reproducir el sonido de la animación
 			}
 
 			if (fadeAlpha > 0.0f)

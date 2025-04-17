@@ -27,7 +27,6 @@ Transition::Transition() {
     currentPhase = 1;
 
     sourceRect = { currentFrame * (shipSprite.width / 4), 0.0f, static_cast<float>(shipSprite.width) / 4, static_cast<float>(shipSprite.height) };  // 4 frames en el spritesheet de la nave
-    //PlaySound(snd_animation); // Reproducir el sonido de la animación
 }
 
 Transition::~Transition()
@@ -58,7 +57,6 @@ void Transition::Update() {
 
         if (transitionTime >= 2.0f) {
             currentPhase = 2;
-            //PlaySound(snd_animation); // Reproducir el sonido de la animación
         }
     }
     else if (currentPhase == 2) 
