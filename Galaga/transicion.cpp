@@ -6,6 +6,7 @@ Transition::Transition() {
     shipSprite = LoadTexture("resources/aparicion1-sheet.png");
 
     score = LoadTexture("resources/score_letters.png");
+    snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 
     backgroundY = 0.0f;
     currentBackgroundFrame = 0;  // Comienza con el primer frame de fondo
@@ -26,16 +27,19 @@ Transition::Transition() {
     currentPhase = 1;
 
     sourceRect = { currentFrame * (shipSprite.width / 4), 0.0f, static_cast<float>(shipSprite.width) / 4, static_cast<float>(shipSprite.height) };  // 4 frames en el spritesheet de la nave
+    //PlaySound(snd_animation); // Reproducir el sonido de la animación
 }
 
 Transition::~Transition()
 {
     UnloadTexture(background1);
-    UnloadTexture(spaceship);
+    UnloadTexture(spaceship);   
     UnloadTexture(shipSprite);
+    UnloadSound(snd_animation);
 }
 
 void Transition::Update() {
+
     if (finished) return;
 
     transitionTime += GetFrameTime();
@@ -47,8 +51,14 @@ void Transition::Update() {
         currentBackgroundFrame = (currentBackgroundFrame + 1) % 2;
     }
     if (currentPhase == 1) {
+
+        if (transitionTime <= 0.05) {
+            PlaySound(snd_animation);
+        }
+
         if (transitionTime >= 2.0f) {
-            currentPhase = 2; 
+            currentPhase = 2;
+            //PlaySound(snd_animation); // Reproducir el sonido de la animación
         }
     }
     else if (currentPhase == 2) 

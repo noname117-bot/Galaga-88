@@ -1,2 +1,10 @@
-﻿  game.cpp
-  Galaga.vcxproj -> C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+﻿  transicion.cpp
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,63): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,63): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,84): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,84): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,111): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
+C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\transicion.cpp(105,111): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  Galaga.vcxproj -> C:\Users\aidan\OneDrive\Documentos\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+  "pwsh.exe" no se reconoce como un comando interno o externo,
+  programa o archivo por lotes ejecutable.

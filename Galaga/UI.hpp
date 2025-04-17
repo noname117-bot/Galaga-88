@@ -19,4 +19,5 @@ private:
 	std::string currentScore;
 
 	void DrawScore();
+
 };

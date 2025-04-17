@@ -4,12 +4,12 @@
 #include <iostream>
 #include <vector>
 
+
 Game::Game()
 {
-
+    snd_explosion_red = LoadSound("resources/sound_effects/explosion_red.wav");
     startSprite = LoadTexture("resources/UI/start.png");  
     stageSprite = LoadTexture("resources/UI/stage1.png");
-
     enemies = createEnemy(); 
 
     for (int i = 0; i < 10; i++) {
@@ -24,6 +24,7 @@ Game::Game()
 
 Game::~Game()
 {
+	UnloadSound(snd_explosion_red); // Unload sound
 
     for (int i = 0; i < 10; i++) 
     {
@@ -129,6 +130,7 @@ void Game::HandleInput()
     }
     else if (IsKeyDown(KEY_X)) {
         spaceship.FireLaser();
+        
     }
 }
 
@@ -152,7 +154,7 @@ void Game::CheckForCollisions()
                     score += 40;
                     std::cout << "Enemigo destruido! Puntaje: " << score << std::endl;
                 }
-
+				PlaySound(snd_explosion_red); // Reproducir sonido de explosión
                 it = enemies.erase(it);
                 bullet.active = false;
                 break;  // Una bala solo puede impactar un enemigo

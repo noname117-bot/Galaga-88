@@ -8,20 +8,17 @@ using namespace std;
 #include "UI.hpp"
 #include "Transicion.hpp"
 
-
-
 int main() {
 
-	 // color gris oscuro
+	// color gris oscuro
 	int initWidth = 1024; // ancho de la pantalla
 	int initHeight = 928; // alto de la pantalla
 
 	InitWindow(initWidth, initHeight, "Galaga ");
 	SetTargetFPS(60); 
-
-	
+	InitAudioDevice();
+	//Sound snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 	Texture2D background_image= LoadTexture("resources/bg_stage1_2.png");
-
 
 	
 	float scale = 4.0f; //aumentamos las dimensiones de la imagen de fondo
@@ -53,6 +50,7 @@ int main() {
 		else if (!transition.IsFinished())
 		{
 			transition.Update();
+			
 		}
 		else
 		{
@@ -60,7 +58,7 @@ int main() {
 			if (!FadingIn)
 			{
 				FadingIn = true;
-
+				//PlaySound(snd_animation); // Reproducir el sonido de la animación
 			}
 
 			if (fadeAlpha > 0.0f)
@@ -84,6 +82,7 @@ int main() {
 		}
 		else
 		{
+			
 			DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
 			game.Draw();
 			ui.Draw();

@@ -37,4 +37,9 @@ private:
 	// life
 	int lives;
 	Texture2D livesTexture;
+
+	// Sound
+	Sound snd_bullet;
+	//Sound snd_animation;
+
 };	

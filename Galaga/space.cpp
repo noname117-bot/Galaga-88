@@ -2,6 +2,8 @@
 
 Spaceship::Spaceship()
 {
+	//snd_animation = LoadSound("resources/sound_effects/Animation.wav");
+	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
 	image = LoadTexture("resources/spaceship.png"); //nave original
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
@@ -23,11 +25,14 @@ Spaceship::Spaceship()
 	// Variable vida
 	lives = 2;
 	livesTexture = LoadTexture("resources/spaceship.png");
+	//PlaySound(snd_animation); // Reproducir el sonido de la animación
 }
 Spaceship::~Spaceship()
 {
+	UnloadSound(snd_bullet); // Unload sound
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);	
+	//UnloadSound(snd_animation);
 }
 void Spaceship::Draw()
 {
@@ -65,14 +70,16 @@ void Spaceship::MoveRight()
 }
 void Spaceship::FireLaser()
 {
+	
 	if (bulletCount <2 && GetTime() - lastFiretime >= 0.20)// el 0.20 es la diferencia de segundos entre la primera y la segunda bala
 	{
 		if(IsKeyDown(KEY_X))
 		{
+			PlaySound(snd_bullet); // Reproducir el sonido del disparo
 			bullets.push_back(Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
 			bulletCount++;
 			lastFiretime = GetTime();
-
+			
 		}
 	
 	}

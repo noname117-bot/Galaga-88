@@ -22,4 +22,5 @@ private:
 	std::vector<Enemy> createEnemy();
 	Spaceship spaceship;
 	std::vector<Enemy> enemies;
+	Sound snd_explosion_red;
 };
