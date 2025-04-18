@@ -3,31 +3,29 @@
 Spaceship::Spaceship()
 {
 	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
-	image = LoadTexture("resources/spaceship.png"); //nave original
+	image = LoadTexture("resources/spaceship.png"); 
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
 	lastFiretime = 0.0;
 	reloadTime = 0.05f;
 	bulletCount = 0;
 
-	//nave animacion entrada
 	spriteSheet = LoadTexture("resources/aparicion1-sheet.png");
 	frameWidth = 16;
 	frameHeight = 32;
 	currentFrame = 0;
-	frameTime = 0.2f; // Tiempo entre cada cambio de frame
+	frameTime = 0.2f; 
 	frameCounter = 0.0f;
 	animation = false;
 	startY = 2;
 	startX = 2;
 
-	// Variable vida
 	lives = 2;
 	livesTexture = LoadTexture("resources/spaceship.png");
 }
 Spaceship::~Spaceship()
 {
-	UnloadSound(snd_bullet); // Unload sound
+	UnloadSound(snd_bullet); 
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);	
 }
@@ -35,15 +33,15 @@ void Spaceship::Draw()
 {
 	if (!animation)
 	{
-		int frameX = startX + currentFrame * (frameWidth + 4); // 4 es la separación entre sprites
+		int frameX = startX + currentFrame * (frameWidth + 4); 
 
 		Rectangle sourceRect = { frameX, startY, frameWidth, frameHeight };
-		Rectangle destRect = { position.x, position.y, frameWidth * 4, frameHeight * 4 }; // Escalamos 4x
+		Rectangle destRect = { position.x, position.y, frameWidth * 4, frameHeight * 4 }; 
 
 		DrawTexturePro(spriteSheet, sourceRect, destRect, { 0, 0 }, 0.0f, WHITE);
 	}
-	else { // cuando la animacion finalice solo quedara la nave "original"
-		DrawTextureEx(image, position, 0.0f, 4.0f, WHITE); // draw the spaceship
+	else { 
+		DrawTextureEx(image, position, 0.0f, 4.0f, WHITE);
 
 	}
 
