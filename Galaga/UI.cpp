@@ -15,7 +15,7 @@ GameUI::GameUI()
 GameUI::~GameUI()
 {
 	DrawScore();
-}
+} 
 
 void GameUI::Draw()
 {

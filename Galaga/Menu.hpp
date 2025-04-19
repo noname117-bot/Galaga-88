@@ -7,6 +7,11 @@ private:
 	Texture2D spriteSheet2;
 	Rectangle sourceRect;   // Sección actual del spritesheet
 	
+
+	Texture2D introImage;
+	Texture2D bee;
+	Rectangle introSourceRect;
+
 	int currentFrame;       // Frame actual de la animación
 	float frameTime;        // Tiempo por frame
 	float frameCounter;     // Contador para cambiar de frame
@@ -21,6 +26,23 @@ private:
 
 	int totalCycles;
 	int cyclesCompleted;
+         
+
+	bool showIntro;             
+	bool introAnimationFinished; 
+	int introCurrentFrame;       
+	float introFrameCounter;    
+	float introFrameTime;        
+
+	bool beeActive;              
+	bool beeFinished;           
+	Vector2 beePosition;         
+	float beeSpeed;
+
+	bool waitingForBee;          
+	float beeDelayTimer;         
+	float beeDelayDuration;     
+
 public:
 	Menu();
 	~Menu();
