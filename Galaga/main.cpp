@@ -27,7 +27,7 @@ int main() {
 	bool FadingIn = false;
 
 
-
+	 //
 	Game game; // crea un objeto de la clase Game	
 	Menu menu;
 	GameUI ui;
@@ -80,7 +80,7 @@ int main() {
 		}
 		else
 		{
-			
+			//
 			DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
 			game.Draw();
 			ui.Draw();

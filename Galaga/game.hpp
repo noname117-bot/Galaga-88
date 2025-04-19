@@ -19,8 +19,11 @@ public:
 	void CheckForCollisions();
 private:
 	void DeleteInactiveBullet();
+	void DeleteInactiveEnemyBullet();
 	std::vector<Enemy> createEnemy();
 	Spaceship spaceship;
+	//Enemy enemy;
 	std::vector<Enemy> enemies;
+	std::vector<enemy_Bullet> enemyBullets; // Vector global para las balas de los enemigos
 	Sound snd_explosion_red;
 };

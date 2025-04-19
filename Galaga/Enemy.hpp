@@ -1,5 +1,8 @@
 #pragma once
 #include <raylib.h>
+//#include "enemy_bullet.hpp"
+#include <vector>
+
 
 
 enum {
@@ -16,19 +19,20 @@ enum {
 
 class Enemy {
 public:
+	
     Enemy(int type, Vector2 position, int pathType, bool startFromLeft);
 
     void Update();
     void Draw();
     int GetType();
     Rectangle getRect();
+    
 
     // Variables públicas
     int type;
     void Activate(); // Activar el enemigo
     bool IsActive(); // Verificar si está activo
     bool IsInFormation();
-
 private:
     Vector2 position;
     Vector2 finalPosition;

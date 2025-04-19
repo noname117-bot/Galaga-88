@@ -3,6 +3,8 @@
 #include "bullet.hpp"
 #include <vector>
 
+#include "enemy_bullet.hpp"
+
 class Spaceship {
 
 public:
@@ -20,6 +22,7 @@ public:
 	void DrawLives();
 
 	std::vector<Bullet> bullets;
+	std::vector<enemy_Bullet> enemy_bullets;
 private:
 	Texture2D image;
 	Vector2 position;// position of the spaceship

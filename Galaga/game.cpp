@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "enemy.hpp"
 #include "bullet.hpp"
+#include "enemy_bullet.hpp"
 #include <iostream>
 #include <vector>
 
@@ -61,7 +62,14 @@ void Game::Update()
             enemy.Update();
         }
     }
-    DeleteInactiveBullet(); 
+    
+    for (auto& enemy_bullet : spaceship.enemy_bullets) {
+        enemy_bullet.Update();
+    }
+
+    DeleteInactiveEnemyBullet();
+    
+    DeleteInactiveBullet();
     CheckForCollisions();
 }
 
@@ -70,6 +78,10 @@ void Game::Draw()
     spaceship.Draw();
     for (auto& bullet : spaceship.bullets) {
         bullet.Draw();
+    }
+
+    for (auto& enemy_bullet : spaceship.enemy_bullets) {
+        enemy_bullet.Draw();
     }
 
     for (auto& enemy : enemies) {
@@ -177,6 +189,20 @@ void Game::DeleteInactiveBullet()
         if (!it->active)
         {
             it = spaceship.bullets.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+}
+
+void Game::DeleteInactiveEnemyBullet()
+{
+    for (auto it = spaceship.enemy_bullets.begin(); it != spaceship.enemy_bullets.end();)
+    {
+        if (!it->active)
+        {
+            it = spaceship.enemy_bullets.erase(it);
         }
         else {
             ++it;

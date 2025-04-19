@@ -72,6 +72,7 @@ void Spaceship::FireLaser()
 		{
 			PlaySound(snd_bullet); // Reproducir el sonido del disparo
 			bullets.push_back(Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
+			//enemy_bullets.push_back(enemy_Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
 			bulletCount++;
 			lastFiretime = GetTime();
 			
@@ -96,6 +97,13 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 
 	// Disparo
 	FireLaser();
+
+
+	if (GetRandomValue(0, 100) < 1) { // Probabilidad de disparar
+		enemy_bullets.push_back(enemy_Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
+	}
+
+
 
 	if (!animation)
 	{
