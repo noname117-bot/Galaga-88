@@ -1,5 +1,6 @@
 #include "UI.hpp"
 
+
 GameUI::GameUI()
 {
 
@@ -15,6 +16,7 @@ GameUI::GameUI()
 GameUI::~GameUI()
 {
 	DrawScore();
+	
 } 
 
 void GameUI::Draw()
@@ -35,7 +37,7 @@ void GameUI::DrawScore() {
 
 
 	DrawTextureEx(score, position, 0.0f, scale, WHITE);
-
+	
 	DrawTextureEx(life1, position1, 0.0f, scale, WHITE);
 	DrawTextureEx(life2, position2, 0.0f, scale, WHITE);
 

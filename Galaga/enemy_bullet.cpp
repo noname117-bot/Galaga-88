@@ -37,7 +37,7 @@ void enemy_Bullet::Update()
 	position.y -= speed;
 	if (active)
 	{
-		if (position.y > GetScreenHeight() || position.y > 928)
+		if (position.y > GetScreenHeight())	
 		{
 			active = false;
 			cout << "Bala enemiga inactivada" << endl;

@@ -36,5 +36,7 @@ public:
 	void Update();
 	void Draw();
 	bool IsFinished()const;
+
+	
 	Sound snd_animation;
 };

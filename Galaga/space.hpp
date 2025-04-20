@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "enemy_bullet.hpp"
+#include "Enemy.hpp"
+//#include "UI.hpp"
 
 class Spaceship {
 
@@ -17,12 +19,18 @@ public:
 	void Update();
 
 	Rectangle getRect();
-	// life
-	int Getlives();
-	void DrawLives();
 
+	
 	std::vector<Bullet> bullets;
 	std::vector<enemy_Bullet> enemy_bullets;
+	std::vector<Enemy> enemies;
+
+	bool isExploding;          // Indica si la explosión está activa
+	int explosionFrame;        // Fotograma actual de la explosión
+	float explosionFrameTime;  // Tiempo entre fotogramas
+	float explosionTimer;      // Temporizador para cambiar de fotograma
+	Vector2 explosionPosition; // Posición de la explosión
+	int lives;
 private:
 	Texture2D image;
 	Vector2 position;// position of the spaceship
@@ -31,6 +39,10 @@ private:
 	int bulletCount; // contador de balas
 
 	Texture2D spriteSheet;
+	Texture2D explosion_spriteSheet;
+	Texture2D life1;
+	Texture2D life2;
+	Texture2D game_over;
 	int frameWidth, frameHeight;
 	int currentFrame;
 	float frameTime, frameCounter;
@@ -38,9 +50,12 @@ private:
 	int startX, startY;
 
 	// life
-	int lives;
+	
 	Texture2D livesTexture;
+	
 
 	// Sound
 	Sound snd_bullet;
+	//Sound snd_shipExplosion;
+
 };	

@@ -9,6 +9,7 @@
 Game::Game()
 {
     snd_explosion_red = LoadSound("resources/sound_effects/explosion_red.wav");
+    snd_shipExplosion = LoadSound("resources/sound_effects/explosion_starship.wav");
     startSprite = LoadTexture("resources/UI/start.png");  
     stageSprite = LoadTexture("resources/UI/stage1.png");
     enemies = createEnemy(); 
@@ -63,7 +64,10 @@ void Game::Update()
         }
     }
     
-    for (auto& enemy_bullet : spaceship.enemy_bullets) {
+    enemies_shot();
+    CheckForEnemyBulletCollisions();
+
+    for (auto& enemy_bullet : enemy_bullets) {
         enemy_bullet.Update();
     }
 
@@ -80,7 +84,7 @@ void Game::Draw()
         bullet.Draw();
     }
 
-    for (auto& enemy_bullet : spaceship.enemy_bullets) {
+    for (auto& enemy_bullet : enemy_bullets) {
         enemy_bullet.Draw();
     }
 
@@ -146,6 +150,47 @@ void Game::HandleInput()
     }
 }
 
+void Game::enemies_shot()
+{ 
+    
+        
+    for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
+    {
+        if (GetRandomValue(0, 100) < 1) { // Probabilidad de disparar de cada enemigo
+
+            enemy_bullets.push_back(enemy_Bullet( { bull->getPosition().x , bull->getPosition().y + 20 } , -6));
+            //PlaySound(snd_explosion_red);
+
+        }
+    }
+}
+
+
+void Game::CheckForEnemyBulletCollisions()
+{
+    if (spaceship.lives > -1){
+        for (auto& bullet : enemy_bullets) {
+            if (!bullet.active) continue;
+
+            Rectangle bulletRect = bullet.getRect();
+            Rectangle spaceshipRect = spaceship.getRect();
+
+            if (CheckCollisionRecs(spaceshipRect, bulletRect)) {
+
+                for (auto& bullet : enemy_bullets) {
+                    bullet.active = false;
+                }
+
+                spaceship.isExploding = true;
+                spaceship.explosionPosition = { spaceshipRect.x + 20 + spaceshipRect.width / 2, spaceshipRect.y + 20 + spaceshipRect.height / 2 };
+
+                PlaySound(snd_shipExplosion); // Reproducir sonido de explosión
+                break; 
+            }
+        }
+    }
+}
+
 void Game::CheckForCollisions()
 {
 
@@ -198,11 +243,11 @@ void Game::DeleteInactiveBullet()
 
 void Game::DeleteInactiveEnemyBullet()
 {
-    for (auto it = spaceship.enemy_bullets.begin(); it != spaceship.enemy_bullets.end();)
+    for (auto it = enemy_bullets.begin(); it != enemy_bullets.end();)
     {
         if (!it->active)
         {
-            it = spaceship.enemy_bullets.erase(it);
+            it = enemy_bullets.erase(it);
         }
         else {
             ++it;

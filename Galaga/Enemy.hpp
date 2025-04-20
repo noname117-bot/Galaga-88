@@ -33,6 +33,9 @@ public:
     void Activate(); // Activar el enemigo
     bool IsActive(); // Verificar si está activo
     bool IsInFormation();
+    Vector2 getPosition() const {
+        return position;
+    }
 private:
     Vector2 position;
     Vector2 finalPosition;

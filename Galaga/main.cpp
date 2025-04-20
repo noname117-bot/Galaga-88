@@ -8,11 +8,15 @@ using namespace std;
 #include "UI.hpp"
 #include "Transicion.hpp"
 
+
+
 int main() {
 
 	// color gris oscuro
 	int initWidth = 1024; // ancho de la pantalla
 	int initHeight = 928; // alto de la pantalla
+
+
 
 	InitWindow(initWidth, initHeight, "Galaga ");
 	SetTargetFPS(60); 

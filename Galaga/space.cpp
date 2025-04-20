@@ -1,8 +1,12 @@
 #include "space.hpp"
+#include <iostream>
+
+
 
 Spaceship::Spaceship()
 {
 	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
+	lives = 2;
 	image = LoadTexture("resources/spaceship.png"); 
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
@@ -11,6 +15,7 @@ Spaceship::Spaceship()
 	bulletCount = 0;
 
 	spriteSheet = LoadTexture("resources/aparicion1-sheet.png");
+	explosion_spriteSheet = LoadTexture("resources/explosion_starhip.png");
 	frameWidth = 16;
 	frameHeight = 32;
 	currentFrame = 0;
@@ -20,8 +25,14 @@ Spaceship::Spaceship()
 	startY = 2;
 	startX = 2;
 
-	lives = 2;
+	game_over = LoadTexture("resources/game_over.png");
 	livesTexture = LoadTexture("resources/spaceship.png");
+
+	isExploding = false;
+	explosionFrame = 0;
+	explosionFrameTime = 0.1f; 
+	explosionTimer = 0.0f;
+	explosionPosition = { 0.0f, 0.0f };
 }
 Spaceship::~Spaceship()
 {
@@ -41,8 +52,25 @@ void Spaceship::Draw()
 		DrawTexturePro(spriteSheet, sourceRect, destRect, { 0, 0 }, 0.0f, WHITE);
 	}
 	else { 
-		DrawTextureEx(image, position, 0.0f, 4.0f, WHITE);
-
+		
+		
+		if (isExploding) {
+			int frameWidth = explosion_spriteSheet.width / 8; // Ancho de un fotograma
+			int frameHeight = explosion_spriteSheet.height;  // Altura de un fotograma
+			Rectangle sourceRect = { frameWidth * explosionFrame, 0, frameWidth, frameHeight };
+			Rectangle destRect = { explosionPosition.x, explosionPosition.y, frameWidth * 4.0f, frameHeight * 4.0f };
+			DrawTexturePro(explosion_spriteSheet, sourceRect, destRect, { frameWidth * 2.0f, frameHeight * 2.0f }, 0.0f, WHITE);
+		}
+		else
+		{
+			if (lives > -1) {
+				DrawTextureEx(image, position, 0.0f, 4.0f, WHITE);
+			}
+			else 
+			{
+				DrawTextureEx(game_over, { 396,400 } , 0.0f, 4.0f, WHITE);
+			}
+		}
 	}
 
 }	
@@ -72,7 +100,7 @@ void Spaceship::FireLaser()
 		{
 			PlaySound(snd_bullet); // Reproducir el sonido del disparo
 			bullets.push_back(Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
-			//enemy_bullets.push_back(enemy_Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
+			
 			bulletCount++;
 			lastFiretime = GetTime();
 			
@@ -88,6 +116,8 @@ void Spaceship::FireLaser()
 
 void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mismo tiempo
 {
+
+
 	if (IsKeyDown(KEY_LEFT)) {
 		MoveLeft();
 	}
@@ -96,14 +126,7 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 	}
 
 	// Disparo
-	FireLaser();
-
-
-	if (GetRandomValue(0, 100) < 1) { // Probabilidad de disparar
-		enemy_bullets.push_back(enemy_Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
-	}
-
-
+	if (isExploding == false && lives > -1) FireLaser();
 
 	if (!animation)
 	{
@@ -121,9 +144,28 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 			}
 		}
 	}
+
+	// Actualizar la animación de la explosión
+	if (isExploding) {
+		explosionTimer += GetFrameTime();
+		if (explosionTimer >= explosionFrameTime) {
+			explosionTimer = 0.0f;
+			explosionFrame++;
+
+			// Si se completan los 8 fotogramas, desactiva la explosión
+			if (explosionFrame >= 8) {
+				explosionFrame = 0;			
+				isExploding = false;
+				lives--;
+				//if (lives < 1) DrawTextureEx(life1, { 135, 860 }, 0.0f, 4.0f, BLACK);
+				//if (lives < 2) DrawTextureEx(life2, { 70, 860 }, 0.0f, 4.0f, BLACK);
+
+			}
+		}
+	}
 }
 
 Rectangle Spaceship::getRect()
 {
-	return { position.x, position.y,float(image.width), float(image.height) };
+	return { position.x, position.y,float(image.width * 4), float(image.height * 4) };
 }

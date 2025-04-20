@@ -1,6 +1,7 @@
 #pragma once
 #include "space.hpp"
 #include "enemy.hpp"
+#include "enemy_bullet.hpp"
 
 class Game {
 public:
@@ -15,15 +16,20 @@ public:
 	Texture2D startSprite;  // Sprite para "START"
 	Texture2D stageSprite;  // Sprite para "STAGE 1"
 	float textTimer = 0.0f;
+	std::vector<enemy_Bullet> enemy_bullets;
 
 	void CheckForCollisions();
+	void CheckForEnemyBulletCollisions();
+
 private:
 	void DeleteInactiveBullet();
 	void DeleteInactiveEnemyBullet();
 	std::vector<Enemy> createEnemy();
+	void enemies_shot();
+	
 	Spaceship spaceship;
-	//Enemy enemy;
 	std::vector<Enemy> enemies;
-	std::vector<enemy_Bullet> enemyBullets; // Vector global para las balas de los enemigos
+	
 	Sound snd_explosion_red;
+	Sound snd_shipExplosion;
 };

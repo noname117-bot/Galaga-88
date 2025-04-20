@@ -2,7 +2,7 @@
 #include "raylib.h"
 #include <cmath>
 
-//enemy_bullets.push_back(enemy_Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));  enemigo dispara
+
 
 Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : type(type), position(position), pathType(pathType), startFromLeft(startFromLeft)
 {
