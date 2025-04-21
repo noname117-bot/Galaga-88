@@ -1,11 +1,11 @@
 #include "transicion.hpp"
 
 Transition::Transition() {
-    background1 = LoadTexture("resources/bg_startgame-sheet.png");
+    background1 = LoadTexture("resources/screens/bg_startgame-sheet.png");
     spaceship = LoadTexture("resources/spaceship.png");
     shipSprite = LoadTexture("resources/aparicion1-sheet.png");
 
-    score = LoadTexture("resources/score_letters.png");
+    score = LoadTexture("resources/UI/score_letters.png");
     snd_animation = LoadSound("resources/sound_effects/Animation.wav");
 
     backgroundY = 0.0f;
@@ -113,11 +113,11 @@ void Transition::Draw() {
     if (currentPhase <= 3) 
     {
         float scale = 4.0;
-        DrawTextureEx(spaceship,{ 512 - spaceship.width * scale / 2, shipY - spaceship.height * scale / 2 },0.0f,scale,WHITE);
+        DrawTextureEx(spaceship,{ GetScreenWidth()/2 - spaceship.width * scale / 2, shipY - spaceship.height * scale / 2}, 0.0f, scale, WHITE);
     }
     else if (currentPhase == 4 && !finished) 
     {
-        DrawTexturePro(shipSprite, sourceRect,{ 512, shipY, 128, 128 }, { 64, 64 },0, WHITE);
+        DrawTexturePro(shipSprite, sourceRect, { static_cast<float>(GetScreenWidth()) / 2, shipY, 128.0f, 128.0f }, { 64.0f, 64.0f }, 0.0f, WHITE);
     }
 
     DrawTextureEx(score, { 70, 30 }, 0.0f, 4.0f, WHITE);

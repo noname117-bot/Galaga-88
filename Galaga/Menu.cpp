@@ -2,11 +2,11 @@
 
 Menu::Menu()
 {
-    spriteSheet = LoadTexture("resources/electionsingle-sheet.png");
-    spriteSheet2 = LoadTexture("resources/selecion_letras-sheet.png");
+    spriteSheet = LoadTexture("resources/screens/single_dual.png");
+    spriteSheet2 = LoadTexture("resources/screens/single.png");
 
-    introImage = LoadTexture("resources/intro-sheet.png");
-    bee = LoadTexture("resources/bee.png");
+    introImage = LoadTexture("resources/screens/introSheet.png");
+    bee = LoadTexture("resources/screens/bee.png");
 
     usingSecondAnimation = false;
     frameTimeSelected = 0.05;
@@ -22,7 +22,7 @@ Menu::Menu()
     totalCycles = 5; 
     cyclesCompleted = 0;
 
-    sourceRect = { 0, 0, 256, 232 };
+    sourceRect = { 0, 0, 224, 232 };
 
     snd_selection = LoadSound("resources/sound_effects/effect_selection.wav");
 
@@ -30,16 +30,16 @@ Menu::Menu()
     introCurrentFrame = 0;
     introFrameCounter = 0;
     introFrameTime = 0.4f; 
-    introSourceRect = { 0, 0, 256, 232 };
+    introSourceRect = { 0, 0, 224, 232 };
 
 
     showIntro = true;
     beeFinished = false;
     beePosition = { -100.0f,220.0f };
-    beeSpeed = 350.0f;
+    beeSpeed = 200.0f;
 
     beeDelayTimer = 0.0f;
-    beeDelayDuration = 5.0f;
+    beeDelayDuration = 100.0f;
     waitingForBee = false;
 }
 
@@ -75,7 +75,7 @@ void Menu::Update()
                     waitingForBee = true; 
                 }
 
-                introSourceRect.x = introCurrentFrame * 256;
+                introSourceRect.x = introCurrentFrame * 224;
             }
         }
 
@@ -130,7 +130,7 @@ void Menu::Update()
             {
                 frameCounter = 0;
                 currentFrame = (currentFrame + 1) % 4;
-                sourceRect.x = currentFrame * 256;
+                sourceRect.x = currentFrame * 224;
             }
         }
     }
@@ -153,18 +153,45 @@ void Menu::Update()
                     cyclesCompleted++;
                 }
 
-                sourceRect.x = currentFrame * 256;
+                sourceRect.x = currentFrame * 224;
             }
         }
     }
 }
 
+void Menu::Reset() {
+    // Descargar texturas anteriores si es necesario
+    UnloadTexture(introImage);
+    UnloadTexture(spriteSheet);
+    UnloadTexture(spriteSheet2);
+    UnloadTexture(bee);
+    // Recargar texturas
+    introImage = LoadTexture("resources/screens/introSheet.png");
+    spriteSheet = LoadTexture("resources/screens/single_dual.png");
+    spriteSheet2 = LoadTexture("resources/screens/single.png");
+    bee = LoadTexture("resources/screens/bee.png");
+
+    // Reiniciar estados de animación
+    introAnimationFinished = false;
+    introCurrentFrame = 0;
+    introFrameCounter = 0;
+    beeActive = false;
+    beeFinished = false;
+    beePosition = { -100.0f, 220.0f };
+    waitingForBee = false;
+    beeDelayTimer = 0.0f;
+
+    // Otros estados
+    showIntro = true;
+    selected = false;
+    usingSecondAnimation = false;
+}
 void Menu::Draw()
 {
 
     if (showIntro)
     {
-        DrawTexturePro(introImage, introSourceRect, { 0, 0, 1024, 928 }, { 0, 0 }, 0, WHITE);
+        DrawTexturePro(introImage, introSourceRect, { 0, 0, 896, 928 }, { 0, 0 }, 0, WHITE);
 
         if (beeActive)
         {
@@ -176,11 +203,11 @@ void Menu::Draw()
 
     if (!usingSecondAnimation)
     {
-        DrawTexturePro(spriteSheet, sourceRect, { 0, 0, 1024, 928 }, { 0, 0 }, 0, WHITE);
+        DrawTexturePro(spriteSheet, sourceRect, { 0, 0, 896, 928 }, { 0, 0 }, 0, WHITE);
     }
     else
     {
-        DrawTexturePro(spriteSheet2, sourceRect, { 0, 0, 1024, 928 }, { 0, 0 }, 0, WHITE);
+        DrawTexturePro(spriteSheet2, sourceRect, { 0, 0, 896, 928 }, { 0, 0 }, 0, WHITE);
 
     }
 }

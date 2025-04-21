@@ -24,24 +24,35 @@ Spaceship::Spaceship()
 	animation = false;
 	startY = 2;
 	startX = 2;
-
-	game_over = LoadTexture("resources/game_over.png");
+	
+	game_over = LoadTexture("resources/UI/game_over.png");
 	livesTexture = LoadTexture("resources/spaceship.png");
-
+	isGameOver = false;
 	isExploding = false;
 	explosionFrame = 0;
 	explosionFrameTime = 0.1f; 
 	explosionTimer = 0.0f;
 	explosionPosition = { 0.0f, 0.0f };
+
+
 }
 Spaceship::~Spaceship()
 {
 	UnloadSound(snd_bullet); 
 	UnloadTexture(image);
-	UnloadTexture(livesTexture);	
+	UnloadTexture(livesTexture);
+	UnloadTexture(game_over);
 }
+
+void Spaceship::Reset() {
+	animation = false;
+	UnloadTexture(livesTexture);
+	livesTexture = LoadTexture("resources/spaceship.png");
+}
+
 void Spaceship::Draw()
 {
+
 	if (!animation)
 	{
 		int frameX = startX + currentFrame * (frameWidth + 4); 
@@ -69,6 +80,7 @@ void Spaceship::Draw()
 			else 
 			{
 				DrawTextureEx(game_over, { 396,400 } , 0.0f, 4.0f, WHITE);
+			
 			}
 		}
 	}
@@ -128,6 +140,8 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 	// Disparo
 	if (isExploding == false && lives > -1) FireLaser();
 
+
+
 	if (!animation)
 	{
 		frameCounter += GetFrameTime();
@@ -157,8 +171,22 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 				explosionFrame = 0;			
 				isExploding = false;
 				lives--;
+
 				//if (lives < 1) DrawTextureEx(life1, { 135, 860 }, 0.0f, 4.0f, BLACK);
 				//if (lives < 2) DrawTextureEx(life2, { 70, 860 }, 0.0f, 4.0f, BLACK);
+
+				if (lives >= 0)
+				{
+					animation = false;
+					currentFrame = 0;
+					frameCounter = 0.0f;
+
+					position.x = (GetScreenWidth() - frameWidth * 4.0f) / 2; 
+					position.y = GetScreenHeight() - frameHeight * 4.0f - 80;
+				}
+				
+				
+				
 
 			}
 		}

@@ -28,7 +28,6 @@ private:
 	int cyclesCompleted;
          
 
-	bool showIntro;             
 	bool introAnimationFinished; 
 	int introCurrentFrame;       
 	float introFrameCounter;    
@@ -44,9 +43,16 @@ private:
 	float beeDelayDuration;     
 
 public:
+
+	bool showIntro;
+	bool SetShowIntro(bool set) {
+		showIntro = set;
+		return showIntro;
+	}
+
 	Menu();
 	~Menu();
-
+	void Reset();
 	void Update();
 	void Draw();
 	bool SingleModeSelected();

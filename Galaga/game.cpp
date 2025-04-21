@@ -16,9 +16,9 @@ Game::Game()
 
     for (int i = 0; i < 10; i++) {
         char file[32];
-        sprintf_s(file, sizeof(file),"resources/UI/score/n%d.png", i);
+        sprintf_s(file, sizeof(file), "resources/UI/score/n%d.png", i);
         scoreTextures[i] = LoadTexture(file);
-     
+
     }
 
     score = 0;
@@ -156,7 +156,7 @@ void Game::enemies_shot()
         
     for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
     {
-        if (GetRandomValue(0, 100) < 1) { // Probabilidad de disparar de cada enemigo
+        if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
 
             enemy_bullets.push_back(enemy_Bullet( { bull->getPosition().x , bull->getPosition().y + 20 } , -6));
             //PlaySound(snd_explosion_red);
@@ -258,18 +258,29 @@ void Game::DeleteInactiveEnemyBullet()
 std::vector<Enemy> Game::createEnemy()
 {
     std::vector<Enemy> enemies;
+    int screenWidth = 1024;
+    int centerX = screenWidth / 2;
+    int spacing = 100;
+    int formationGap = 400;
 
     
-    enemies.push_back(Enemy(1, { 0.0f, 350.0f }, RED_PATH, true));
-    enemies.push_back(Enemy(1, { -50.0f, 350.0f }, ORANGE_PATH, true));
-    enemies.push_back(Enemy(1, { 0.0f, 450.0f }, RED_PATH, true));
-    enemies.push_back(Enemy(1, { -50.0f, 450.0f }, ORANGE_PATH, true));
+    float y1 = 200;
+    float y2 = 255;
 
+    float leftGroupCenter = centerX - (formationGap / 2);
 
-    enemies.push_back(Enemy(2, { 1024.0f, 350.0f }, RED_PATH, false));
-    enemies.push_back(Enemy(2, { 1074.0f, 350.0f }, ORANGE_PATH, false));
-    enemies.push_back(Enemy(2, { 1024.0f, 450.0f }, RED_PATH, false));
-    enemies.push_back(Enemy(2, { 1074.0f, 450.0f }, ORANGE_PATH, false));
+    enemies.push_back(Enemy(1, { leftGroupCenter - spacing / 2, y1 }, 0, true));
+    enemies.push_back(Enemy(1, { leftGroupCenter + spacing / 2, y1 }, 0, true));
+    enemies.push_back(Enemy(1, { leftGroupCenter - spacing, y2 }, 1, true));
+    enemies.push_back(Enemy(1, { leftGroupCenter, y2 }, 1, true));
+
+    float rightGroupCenter = centerX + (formationGap / 2);
+
+    // pathType=0 para los enemigos de la derecha y startFromLeft=false
+    enemies.push_back(Enemy(1, { rightGroupCenter - spacing / 2, y1 }, 0, false));
+    enemies.push_back(Enemy(1, { rightGroupCenter + spacing / 2, y1 }, 0, false));
+    enemies.push_back(Enemy(1, { rightGroupCenter, y2 }, 1, false));
+    enemies.push_back(Enemy(1, { rightGroupCenter + spacing, y2 }, 1, false));
 
     return enemies;
 }

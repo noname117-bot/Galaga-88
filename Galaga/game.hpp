@@ -20,13 +20,15 @@ public:
 
 	void CheckForCollisions();
 	void CheckForEnemyBulletCollisions();
-
+	Spaceship& getSpaceship() { return spaceship; }
 private:
 	void DeleteInactiveBullet();
 	void DeleteInactiveEnemyBullet();
 	std::vector<Enemy> createEnemy();
 	void enemies_shot();
 	
+
+
 	Spaceship spaceship;
 	std::vector<Enemy> enemies;
 	

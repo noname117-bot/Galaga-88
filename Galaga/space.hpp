@@ -31,6 +31,12 @@ public:
 	float explosionTimer;      // Temporizador para cambiar de fotograma
 	Vector2 explosionPosition; // Posición de la explosión
 	int lives;
+
+	bool isGameOver;
+	
+	void Reset();
+
+
 private:
 	Texture2D image;
 	Vector2 position;// position of the spaceship
@@ -43,11 +49,13 @@ private:
 	Texture2D life1;
 	Texture2D life2;
 	Texture2D game_over;
+
 	int frameWidth, frameHeight;
 	int currentFrame;
 	float frameTime, frameCounter;
 	bool animation;
 	int startX, startY;
+
 
 	// life
 	

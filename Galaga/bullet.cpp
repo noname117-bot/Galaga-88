@@ -40,7 +40,6 @@ void Bullet::Update()
 		if (position.y > GetScreenHeight() || position.y < 0)
 		{
 			active = false;
-			cout << "Bala inactivada" << endl;
 		}
 	}
 }

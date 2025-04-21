@@ -40,7 +40,6 @@ void enemy_Bullet::Update()
 		if (position.y > GetScreenHeight())	
 		{
 			active = false;
-			cout << "Bala enemiga inactivada" << endl;
 		}
 	}
 }

@@ -25,6 +25,7 @@ public:
     void Update();
     void Draw();
     int GetType();
+   
     Rectangle getRect();
     
 
@@ -33,9 +34,10 @@ public:
     void Activate(); // Activar el enemigo
     bool IsActive(); // Verificar si está activo
     bool IsInFormation();
-    Vector2 getPosition() const {
-        return position;
-    }
+    Vector2 getPosition() const {  return position; }
+
+    void CalculateFormationOffset();
+
 private:
     Vector2 position;
     Vector2 finalPosition;
@@ -46,7 +48,12 @@ private:
     float moveSpeed;
     Texture2D image;
     bool active;
-    // Para el movimiento en formación
+
+    float formationPhase;
+    float formationProgress;
+    float formationPosition;
+    Vector2 formationOffset;
+
     bool movingRight;
     float formationMoveTimer;
 };

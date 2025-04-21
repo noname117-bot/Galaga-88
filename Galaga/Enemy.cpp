@@ -31,11 +31,14 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
     movingRight = true; // Para el movimiento lateral en formación
     formationMoveTimer = 0; // Temporizador para cambiar de dirección
 
-    // Calcular posición final basada en el tipo de camino y lado de inicio
+    formationPhase = 0;
+    formationProgress = 0.0f;
+    formationPosition = 0;
+
     float centerX = 512.0f;
 
     if (startFromLeft) {
-        if (pathType == 0) { // RED_PATH
+        if (pathType == 0) { 
             finalPosition = { centerX - 100.0f, 200.0f };
         }
         else { // ORANGE_PATH
@@ -64,7 +67,25 @@ bool Enemy::IsActive()
 
 bool Enemy::IsInFormation()
 {
-    return currentPhase == 3; // FORMATION
+    return currentPhase == 3; 
+}
+
+
+void Enemy::CalculateFormationOffset()
+{
+    float horizontalSpacing = 100.0f;
+
+    if (formationPosition < 4) {
+        formationOffset.x = formationPosition * horizontalSpacing;
+        formationOffset.y = 0.0f; 
+    }
+    else {
+        formationOffset.x = (formationPosition - 4) * horizontalSpacing;
+        formationOffset.y = 70.0f; // Bottom row offset
+    }
+
+
+
 }
 
 void Enemy::Update()
@@ -73,29 +94,29 @@ void Enemy::Update()
     if (!active) return;
     switch (currentPhase)
     {
-    case 0: // ENTERING
+    case 0:
     {
         if (startFromLeft) {
             position.x += moveSpeed * 2;
             if (position.x >= 200) {
-                currentPhase = 1; // INFINITI
+                currentPhase = 1;
             }
         }
         else {
             position.x -= moveSpeed * 2;
             if (position.x <= 800) {
-                currentPhase = 1; // INFINITI
+                currentPhase = 1; 
             }
         }
         break;
     }
 
-    case 1: // INFINITI
+    case 1: 
     {
         infinityProgress += 0.01f * moveSpeed;
 
         if (infinityProgress >= 2.0f * PI) {
-            currentPhase = 2; // EXITING
+            currentPhase = 2; 
             break;
         }
 
@@ -107,7 +128,7 @@ void Enemy::Update()
         float x = centerX + widthFactor * cos(infinityProgress) / denominator;
         float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
 
-        if (pathType == 1) { // ORANGE_PATH
+        if (pathType == 1) {
             x = 2 * centerX - x;
         }
 
@@ -116,18 +137,15 @@ void Enemy::Update()
         break;
     }
 
-    case 2: // EXITING
+    case 2: 
     {
-        Vector2 direction = {
-            finalPosition.x - position.x,
-            finalPosition.y - position.y
-        };
+        Vector2 direction = { finalPosition.x - position.x, finalPosition.y - position.y};
 
         float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
 
         if (distance < 5.0f) {
             position = finalPosition;
-            currentPhase = 3; // FORMATION
+            currentPhase = 3; 
             break;
         }
 
@@ -138,32 +156,33 @@ void Enemy::Update()
         break;
     }
 
-    case 3: // FORMATION - Movimiento lateral una vez en posición
+    case 3:
     {
-        // Actualizar temporizador
         formationMoveTimer += GetFrameTime();
 
-        // Cambiar dirección cada 1 segundo
+        Vector2 basePos = {
+            finalPosition.x + formationOffset.x,
+            finalPosition.y + formationOffset.y
+        };
+
+        // Cambiar dirección cada segundo
         if (formationMoveTimer >= 1.0f) {
             movingRight = !movingRight;
             formationMoveTimer = 0;
         }
 
-        // Mover 6 píxeles en la dirección actual
+        // Movimiento lateral más amplio
+        float lateralMovement = 1.2f; // antes era 0.5f
         if (movingRight) {
-            position.x += 0.5f; // Velocidad más baja para que el movimiento sea suave
-            // Limitar movimiento para no salir de pantalla
-            if (position.x > 974) { // 1024 - 50 (ancho aproximado del sprite)
-                movingRight = false;
-            }
+            position.x += lateralMovement;
         }
         else {
-            position.x -= 0.5f;
-            // Limitar movimiento para no salir de pantalla
-            if (position.x < 50) {
-                movingRight = true;
-            }
+            position.x -= lateralMovement;
         }
+
+        // Quitamos el efecto de hover
+        position.y = basePos.y;
+
         break;
     }
     }

@@ -4,12 +4,12 @@
 GameUI::GameUI()
 {
 
-	score = LoadTexture("resources/score_letters.png");
+	score = LoadTexture("resources/UI/score_letters.png");
 
 	life1 = LoadTexture("resources/spaceship.png");
 	life2 = LoadTexture("resources/spaceship.png");
 
-	level = LoadTexture("resources/levels.png");
+	level = LoadTexture("resources/UI/levels.png");
 
 }
 
@@ -33,7 +33,7 @@ void GameUI::DrawScore() {
 	position1 = { 135, 860 }; //vida 1 
 	position2 = { 70, 860 };//vida 2
 
-	position3 = { 950, 860 };//nivel
+	position3 = { 800, 860 };//nivel
 
 
 	DrawTextureEx(score, position, 0.0f, scale, WHITE);
