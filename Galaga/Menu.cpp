@@ -25,6 +25,7 @@ Menu::Menu()
     sourceRect = { 0, 0, 224, 232 };
 
     snd_selection = LoadSound("resources/sound_effects/effect_selection.wav");
+    snd_bee = LoadSound("resources/sound_effects/effect_bee.wav");
 
     introAnimationFinished = false;
     introCurrentFrame = 0;
@@ -45,10 +46,10 @@ Menu::Menu()
 
 Menu::~Menu()
 {
-
     UnloadTexture(spriteSheet);
     UnloadTexture(spriteSheet2);
 	UnloadSound(snd_selection); 
+    UnloadSound(snd_bee);
 
     UnloadTexture(introImage);
     UnloadTexture(bee);
@@ -97,6 +98,7 @@ void Menu::Update()
             {
                 beeFinished = true;
             }
+            PlaySound(snd_bee);
         }
 
         if (IsKeyPressed(KEY_SPACE))
@@ -160,18 +162,17 @@ void Menu::Update()
 }
 
 void Menu::Reset() {
-    // Descargar texturas anteriores si es necesario
+
     UnloadTexture(introImage);
     UnloadTexture(spriteSheet);
     UnloadTexture(spriteSheet2);
     UnloadTexture(bee);
-    // Recargar texturas
+
     introImage = LoadTexture("resources/screens/introSheet.png");
     spriteSheet = LoadTexture("resources/screens/single_dual.png");
     spriteSheet2 = LoadTexture("resources/screens/single.png");
     bee = LoadTexture("resources/screens/bee.png");
 
-    // Reiniciar estados de animación
     introAnimationFinished = false;
     introCurrentFrame = 0;
     introFrameCounter = 0;
@@ -181,7 +182,6 @@ void Menu::Reset() {
     waitingForBee = false;
     beeDelayTimer = 0.0f;
 
-    // Otros estados
     showIntro = true;
     selected = false;
     usingSecondAnimation = false;

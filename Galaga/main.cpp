@@ -58,25 +58,20 @@ int main() {
 			gameOverTimer = 0.0f;
 		}
 
-		if (gameOver) {
-			// Gestionar el estado de Game Over
+		if (gameOver) 
+		{
 			gameOverTimer += GetFrameTime();
-			// Comprobar si han pasado 15 segundos o se ha pulsado espacio
-			if (gameOverTimer >= gameOverDelay || IsKeyPressed(KEY_SPACE)) {
-				// Reiniciar el juego
+			if (gameOverTimer >= gameOverDelay || IsKeyPressed(KEY_SPACE)) 
+			{
 				gameOver = false;
 				gameOverTimer = 0.0f;
-				// Crear una nueva instancia del menú y asegurarnos que muestre la intro
 				menu = Menu();
 				menu.SetShowIntro(true);
 				menu.Reset();
-				// Reiniciar la transición y el fade
 				inTransition = false;
 				FadingIn = false;
 				fadeAlpha = 1.0f;
-				// Reiniciar el juego si es necesario
 				game = Game();
-				// Make sure to reset the spaceship inside the game object
 				game.getSpaceship().Reset();
 			}
 		}
@@ -112,7 +107,7 @@ int main() {
 			game.Update();
 		}
 		
-		BeginDrawing(); // dibuja un canva blanco( básicamente es la pantalla principal) 
+		BeginDrawing(); 
 		ClearBackground(BLACK);
 
 		if (game.getSpaceship().lives <= 0) {

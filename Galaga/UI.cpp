@@ -30,10 +30,10 @@ void GameUI::DrawScore() {
 	
 	position = { 65, 30 }; //score 
 
-	position1 = { 135, 860 }; //vida 1 
-	position2 = { 70, 860 };//vida 2
+	position1 = { 70, 860 }; //vida 1 
+	position2 = { 5, 860 };//vida 2
 
-	position3 = { 800, 860 };//nivel
+	position3 = { 860, 875 };//nivel
 
 
 	DrawTextureEx(score, position, 0.0f, scale, WHITE);

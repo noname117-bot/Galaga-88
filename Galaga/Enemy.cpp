@@ -20,6 +20,8 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
 	case 2:
 		image = LoadTexture("resources/enemies/enemy2_17.png");
 		break;
+    case 3:
+        image = LoadTexture("resources/enemies/bee1.png");
 	}
 
 

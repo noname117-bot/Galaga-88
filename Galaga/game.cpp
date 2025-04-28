@@ -26,7 +26,7 @@ Game::Game()
 
 Game::~Game()
 {
-	UnloadSound(snd_explosion_red); // Unload sound
+	UnloadSound(snd_explosion_red); 
 
     for (int i = 0; i < 10; i++) 
     {
@@ -136,6 +136,15 @@ void Game::Draw()
     }
 }
 
+
+void Game::Reset() {
+    for (int i = 0; i < 10; i++)
+    {
+        UnloadTexture(scoreTextures[i]);
+    }
+
+
+}
 void Game::HandleInput()
 {
     if (IsKeyDown(KEY_LEFT)) {
@@ -209,12 +218,20 @@ void Game::CheckForCollisions()
                 if (it->type == 1 || it->type ==2)
                 {
                     score += 40;
-                    std::cout << "Enemigo destruido! Puntaje: " << score << std::endl;
                 }
 				PlaySound(snd_explosion_red); // Reproducir sonido de explosión
+
+                if (it->type == 3) 
+                {
+                    score += 50;
+                }
+                PlaySound(snd_explosion_red);
+
                 it = enemies.erase(it);
                 bullet.active = false;
+
                 break;  // Una bala solo puede impactar un enemigo
+
             }
             else
             {

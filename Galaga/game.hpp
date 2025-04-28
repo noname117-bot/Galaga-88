@@ -26,7 +26,7 @@ private:
 	void DeleteInactiveEnemyBullet();
 	std::vector<Enemy> createEnemy();
 	void enemies_shot();
-	
+	void Reset();
 
 
 	Spaceship spaceship;
