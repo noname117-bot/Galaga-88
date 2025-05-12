@@ -2,6 +2,7 @@
 #include "space.hpp"
 #include "enemy.hpp"
 #include "enemy_bullet.hpp"
+#include "bosszilla.hpp"  
 
 class Game {
 public:
@@ -20,6 +21,7 @@ public:
 
 	void CheckForCollisions();
 	void CheckForEnemyBulletCollisions();
+	void CheckForBossCollisions();
 	Spaceship& getSpaceship() { return spaceship; }
 private:
 	void DeleteInactiveBullet();
@@ -27,11 +29,16 @@ private:
 	std::vector<Enemy> createEnemy();
 	void enemies_shot();
 	void Reset();
+	void SpawnBoss();
 
 
 	Spaceship spaceship;
 	std::vector<Enemy> enemies;
-	
+	Bosszilla* boss;
+	bool bossActive;
+	int enemiesDefeated;
+
 	Sound snd_explosion_red;
 	Sound snd_shipExplosion;
+	Sound snd_bossAppear;
 };

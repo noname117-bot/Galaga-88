@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bosszilla.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="enemy_bullet.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bosszilla.hpp" />
     <ClInclude Include="bullet.hpp" />
     <ClInclude Include="Enemy.hpp" />
     <ClInclude Include="enemy_bullet.hpp" />
@@ -92,8 +94,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\montserratmc6\Downloads\raylib\raylib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\montserratmc6\Downloads\raylib\raylib\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\aidanag\Downloads\raylib %281%29\raylib\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\aidanag\Downloads\raylib %281%29\raylib\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ExternalIncludePath>C:\Users\monts\Downloads\raylib %281%29\raylib\include;$(ExternalIncludePath)</ExternalIncludePath>
