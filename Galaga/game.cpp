@@ -14,6 +14,7 @@ Game::Game()
     stageSprite = LoadTexture("resources/UI/stage1.png");
     enemies = createEnemy(); 
 
+
     for (int i = 0; i < 10; i++) {
         char file[32];
         sprintf_s(file, sizeof(file), "resources/UI/score/n%d.png", i);
@@ -21,6 +22,7 @@ Game::Game()
 
     }
 
+    currentLevel = 1;
     score = 0;
 }
 
@@ -84,49 +86,46 @@ void Game::Draw()
         bullet.Draw();
     }
 
-    for (auto& enemy_bullet : enemy_bullets) {
-        enemy_bullet.Draw();
+    if (currentLevel == 1) {
+        for (auto& enemy_bullet : enemy_bullets) {
+            enemy_bullet.Draw();
+        }
+
+        for (auto& enemy : enemies) {
+            enemy.Draw();
+        }
     }
 
-    for (auto& enemy : enemies) {
-        enemy.Draw();  
-    }
+ 
 
     Vector2 scorePosition = { 70, 30 };
-    float scoreWidth = 120; 
-
+    float scoreWidth = 120;
 
     float scoreCenterX = scorePosition.x + (scoreWidth / 2);
     float digitWidth = scoreTextures[0].width * 4.0f;
 
- 
-    float startX = scoreCenterX - (digitWidth * 2) -10;
+    float startX = scoreCenterX - (digitWidth * 2) - 10;
 
     int tempScore = score;
 
     float spacing = 5.0f; // espacio entre dígitos
     float totalWidth = digitWidth * 4 + spacing * 3;
 
-
     if (tempScore == 0) {
         DrawTextureEx(scoreTextures[0], { startX + 3 * (digitWidth + spacing), scorePosition.y + 40 }, 0.0f, 4.0f, WHITE);
-
     }
-    else { 
-
+    else {
         int digits[4] = { 0, 0, 0, 0 };
 
-       
         for (int i = 3; i >= 0 && tempScore > 0; i--) {
             digits[i] = tempScore % 10;
             tempScore /= 10;
         }
 
-        
         bool leadingZero = true;
         for (int i = 0; i < 4; i++) {
             if (leadingZero && digits[i] == 0 && i != 3) {
-                continue; 
+                continue;
             }
             else {
                 leadingZero = false;
@@ -137,11 +136,16 @@ void Game::Draw()
 }
 
 
+
 void Game::Reset() {
     for (int i = 0; i < 10; i++)
     {
         UnloadTexture(scoreTextures[i]);
     }
+    currentLevel = 1;
+    enemies = createEnemy();
+    score = 0;
+    spaceship.Reset();
 
 
 }

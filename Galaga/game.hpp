@@ -23,6 +23,12 @@ public:
 	void CheckForEnemyBulletCollisions();
 	void CheckForBossCollisions();
 	Spaceship& getSpaceship() { return spaceship; }
+
+	int getCurrentLevel() const { return currentLevel; }
+
+	bool areEnemiesDefeated()const { return enemies.empty(); }
+
+
 private:
 	void DeleteInactiveBullet();
 	void DeleteInactiveEnemyBullet();
@@ -37,6 +43,7 @@ private:
 	Bosszilla* boss;
 	bool bossActive;
 	int enemiesDefeated;
+	int currentLevel = 1;
 
 	Sound snd_explosion_red;
 	Sound snd_shipExplosion;
