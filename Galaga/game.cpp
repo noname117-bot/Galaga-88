@@ -10,31 +10,29 @@ Game::Game()
 {
     snd_explosion_red = LoadSound("resources/sound_effects/explosion_red.wav");
     snd_shipExplosion = LoadSound("resources/sound_effects/explosion_starship.wav");
-    startSprite = LoadTexture("resources/UI/start.png");  
+    startSprite = LoadTexture("resources/UI/start.png");
     stageSprite = LoadTexture("resources/UI/stage1.png");
-    enemies = createEnemy(); 
-
+    enemies = createEnemy();
 
     for (int i = 0; i < 10; i++) {
         char file[32];
         sprintf_s(file, sizeof(file), "resources/UI/score/n%d.png", i);
         scoreTextures[i] = LoadTexture(file);
-
     }
 
     currentLevel = 1;
     score = 0;
+    levelCompleted = false; 
 }
 
 Game::~Game()
 {
-	UnloadSound(snd_explosion_red); 
+    UnloadSound(snd_explosion_red);
 
-    for (int i = 0; i < 10; i++) 
+    for (int i = 0; i < 10; i++)
     {
-        UnloadTexture(scoreTextures[i]);  
+        UnloadTexture(scoreTextures[i]);
     }
-
 }
 
 void Game::Update()
@@ -45,15 +43,13 @@ void Game::Update()
     if (nextEnemyToActivate < enemies.size()) {
         enemyActivationTimer += GetFrameTime();
 
-        // Activar un nuevo enemigo cada 1 segundo
         if (enemyActivationTimer >= 1.0f) {
             enemies[nextEnemyToActivate].Activate();
             nextEnemyToActivate++;
             enemyActivationTimer = 0;
         }
     }
-    textTimer += GetFrameTime();  
-
+    textTimer += GetFrameTime();
 
     spaceship.Update();
     for (auto& bullet : spaceship.bullets) {
@@ -65,7 +61,7 @@ void Game::Update()
             enemy.Update();
         }
     }
-    
+
     enemies_shot();
     CheckForEnemyBulletCollisions();
 
@@ -74,9 +70,12 @@ void Game::Update()
     }
 
     DeleteInactiveEnemyBullet();
-    
     DeleteInactiveBullet();
     CheckForCollisions();
+
+    if (areEnemiesDefeated() && !levelCompleted) {
+        levelCompleted = true;
+    }
 }
 
 void Game::Draw()
@@ -95,8 +94,6 @@ void Game::Draw()
             enemy.Draw();
         }
     }
-
- 
 
     Vector2 scorePosition = { 70, 30 };
     float scoreWidth = 120;
@@ -135,8 +132,6 @@ void Game::Draw()
     }
 }
 
-
-
 void Game::Reset() {
     for (int i = 0; i < 10; i++)
     {
@@ -146,9 +141,9 @@ void Game::Reset() {
     enemies = createEnemy();
     score = 0;
     spaceship.Reset();
-
-
+    levelCompleted = false; 
 }
+
 void Game::HandleInput()
 {
     if (IsKeyDown(KEY_LEFT)) {
@@ -159,29 +154,27 @@ void Game::HandleInput()
     }
     else if (IsKeyDown(KEY_X)) {
         spaceship.FireLaser();
-        
     }
 }
 
 void Game::enemies_shot()
-{ 
-    
-        
+{
+    // Solo permitir que los enemigos disparen en el nivel 1
+    if (currentLevel != 1) {
+        return;
+    }
+
     for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
     {
         if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
-
-            enemy_bullets.push_back(enemy_Bullet( { bull->getPosition().x , bull->getPosition().y + 20 } , -6));
-            //PlaySound(snd_explosion_red);
-
+            enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x , bull->getPosition().y + 20 }, -6));
         }
     }
 }
 
-
 void Game::CheckForEnemyBulletCollisions()
 {
-    if (spaceship.lives > -1){
+    if (spaceship.lives > -1) {
         for (auto& bullet : enemy_bullets) {
             if (!bullet.active) continue;
 
@@ -198,7 +191,7 @@ void Game::CheckForEnemyBulletCollisions()
                 spaceship.explosionPosition = { spaceshipRect.x + 20 + spaceshipRect.width / 2, spaceshipRect.y + 20 + spaceshipRect.height / 2 };
 
                 PlaySound(snd_shipExplosion); // Reproducir sonido de explosión
-                break; 
+                break;
             }
         }
     }
@@ -206,7 +199,6 @@ void Game::CheckForEnemyBulletCollisions()
 
 void Game::CheckForCollisions()
 {
-
     for (auto& bullet : spaceship.bullets)
     {
         if (!bullet.active) continue;
@@ -219,13 +211,13 @@ void Game::CheckForCollisions()
 
             if (CheckCollisionRecs(enemyRect, bulletRect))
             {
-                if (it->type == 1 || it->type ==2)
+                if (it->type == 1 || it->type == 2)
                 {
                     score += 40;
                 }
-				PlaySound(snd_explosion_red); // Reproducir sonido de explosión
+                PlaySound(snd_explosion_red); // Reproducir sonido de explosión
 
-                if (it->type == 3) 
+                if (it->type == 3)
                 {
                     score += 50;
                 }
@@ -235,7 +227,6 @@ void Game::CheckForCollisions()
                 bullet.active = false;
 
                 break;  // Una bala solo puede impactar un enemigo
-
             }
             else
             {
@@ -243,9 +234,6 @@ void Game::CheckForCollisions()
             }
         }
     }
-
-
-
 }
 
 void Game::DeleteInactiveBullet()
@@ -284,7 +272,6 @@ std::vector<Enemy> Game::createEnemy()
     int spacing = 100;
     int formationGap = 400;
 
-    
     float y1 = 200;
     float y2 = 255;
 
@@ -304,4 +291,27 @@ std::vector<Enemy> Game::createEnemy()
     enemies.push_back(Enemy(1, { rightGroupCenter + spacing, y2 }, 1, false));
 
     return enemies;
+}
+
+bool Game::areEnemiesDefeated() {
+    return enemies.empty();
+}
+
+void Game::nextLevel() {
+    currentLevel++;
+    enemies = createEnemy(); 
+    levelCompleted = false; 
+
+    static float enemyActivationTimer = 0;
+    static int nextEnemyToActivate = 0;
+    enemyActivationTimer = 0;
+    nextEnemyToActivate = 0;
+}
+
+int Game::getCurrentLevel() {
+    return currentLevel;
+}
+
+bool Game::isLevelCompleted() {
+    return levelCompleted;
 }

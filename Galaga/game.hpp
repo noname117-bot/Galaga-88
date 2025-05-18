@@ -28,6 +28,10 @@ public:
 
 	bool areEnemiesDefeated()const { return enemies.empty(); }
 
+	bool areEnemiesDefeated();
+	void nextLevel();
+	int getCurrentLevel();
+	bool isLevelCompleted();
 
 private:
 	void DeleteInactiveBullet();
@@ -37,7 +41,8 @@ private:
 	void Reset();
 	void SpawnBoss();
 
-
+	
+	bool levelCompleted;
 	Spaceship spaceship;
 	std::vector<Enemy> enemies;
 	Bosszilla* boss;
