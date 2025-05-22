@@ -14,7 +14,6 @@ enum GameState {
     STATE_MENU,
     STATE_TRANSITION,
     STATE_GAMEPLAY,
-    STATE_LEVEL_TRANSITION,
     STATE_GAMEOVER
 };
 
@@ -29,6 +28,7 @@ int main() {
     Texture2D background_level2 = LoadTexture("resources/screens/bg_stage1_2.png");
     Texture2D gameOverScreen = LoadTexture("resources/screens/gameOverScreen.png");
     Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
+    Texture2D stage2Announcement = LoadTexture("resources/UI/stage2.png"); 
 
     Texture2D introAnimation = LoadTexture("resources/screens/intro-sheet.png");
 
@@ -45,16 +45,17 @@ int main() {
     float fadeAlpha = 1.0f;
     bool FadingIn = false;
 
-    float levelTransitionTimer = 0.0f;
-    const float levelTransitionDelay = 3.0f;
-    bool transitioning = false;
-    int transitionLevel = 1; // Variable para mantener el nivel durante la transición
+    float stageAnnouncementTimer = 0.0f;
+    const float stageAnnouncementDuration = 2.0f;
 
     Game game;
     Menu menu;
     GameUI ui;
     Spaceship space;
     Transition transition;
+
+    int lastLives = 3; 
+    ui.UpdateLives(3);
 
     float gameOverTimer = 0.0f;
     const float gameOverDelay = 15.0f;
@@ -122,60 +123,73 @@ int main() {
             break;
 
         case STATE_GAMEPLAY:
+        {
             if (game.getSpaceship().lives <= 0) {
                 currentState = STATE_GAMEOVER;
                 gameOverTimer = 0.0f;
             }
-            else if (game.areEnemiesDefeated() && !transitioning) {
-                transitioning = true;
-                transitionLevel = game.getCurrentLevel(); // Captura el nivel actual antes de la transición
-                game.nextLevel(); // Avanza al siguiente nivel
-                currentState = STATE_LEVEL_TRANSITION;
-                levelTransitionTimer = 0.0f;
+            else if (game.areEnemiesDefeated() && stageAnnouncementTimer <= 0.0f) {
+                game.nextLevel(); 
+                stageAnnouncementTimer = stageAnnouncementDuration; 
+                game.getSpaceship().LockInCenter(1.0f);
             }
-            else {
-                game.Update();
+            game.Update();
 
-                // Dibuja el fondo correcto según el nivel
-                if (game.getCurrentLevel() == 1) {
-                    DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
-                }
-                else {
-                    DrawTextureEx(background_level2, position, 0.0f, scale, WHITE);
-                }
+            int currentLives = game.getSpaceship().lives;
+            if (currentLives != lastLives && currentLives > 0) {
+                ui.UpdateLives(currentLives);
+                lastLives = currentLives;
 
-                game.Draw();
-                ui.Draw();
-
-                if (!FadingIn && fadeAlpha > 0.0f) {
-                    fadeAlpha -= 0.7f * GetFrameTime();
-                    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, fadeAlpha));
-                    if (fadeAlpha <= 0.0f) FadingIn = true;
+                static float deathTimer = 0.0f;
+                if (game.getSpaceship().IsDead()) {
+                    deathTimer += GetFrameTime();
+                    if (deathTimer >= 1.0f) { 
+                        game.getSpaceship().StartRespawn();
+                        deathTimer = 0.0f;
+                    }
                 }
             }
-            break;
+            else if (currentLives != lastLives) {
+                ui.UpdateLives(currentLives);
+                lastLives = currentLives;
+            }
 
-        case STATE_LEVEL_TRANSITION:
-            // Dibuja el fondo del nivel que acaba de completarse
-            if (transitionLevel == 1) {
+          
+            if (game.getCurrentLevel() == 1) {
                 DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
             }
             else {
                 DrawTextureEx(background_level2, position, 0.0f, scale, WHITE);
             }
 
+            game.Draw();
+            ui.Draw();
 
+            
+            if (stageAnnouncementTimer > 0.0f) {
+                Vector2 stagePos = {
+                    (GetScreenWidth() - stage2Announcement.width * scale) / 2,
+                    (GetScreenHeight() - stage2Announcement.height * scale) / 2
+                };
+                DrawTextureEx(stage2Announcement, stagePos, 0.0f, scale, WHITE);
 
-            levelTransitionTimer += GetFrameTime();
-            if (levelTransitionTimer >= levelTransitionDelay) {
-                transitioning = false;
-                FadingIn = false;
-                fadeAlpha = 1.0f;
-                currentState = STATE_GAMEPLAY;
+                
+                stageAnnouncementTimer -= GetFrameTime();
+                if (stageAnnouncementTimer <= 0.0f) {
+                    stageAnnouncementTimer = 0.0f; 
+                }
+            }
+
+            if (!FadingIn && fadeAlpha > 0.0f) {
+                fadeAlpha -= 0.7f * GetFrameTime();
+                DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, fadeAlpha));
+                if (fadeAlpha <= 0.0f) FadingIn = true;
             }
             break;
+        }
 
         case STATE_GAMEOVER:
+        {
             Vector2 gameOverPos = { (GetScreenWidth() - gameOverScreen.width * scale) / 2, (GetScreenHeight() - gameOverScreen.height * scale) / 2 };
             DrawTextureEx(gameOverScreen, gameOverPos, 0.0f, 4.0f, WHITE);
             gameOverTimer += GetFrameTime();
@@ -186,11 +200,13 @@ int main() {
                 menu.Reset();
                 game = Game();
                 game.getSpaceship().Reset();
+                ui.UpdateLives(3); 
+                lastLives = 3;
                 FadingIn = false;
                 fadeAlpha = 1.0f;
-                transitioning = false;
             }
             break;
+        }
         }
 
         EndDrawing();
@@ -201,6 +217,7 @@ int main() {
     UnloadTexture(gameOverScreen);
     UnloadTexture(intro);
     UnloadTexture(introAnimation);
+    UnloadTexture(stage2Announcement); 
 
     CloseWindow();
     return 0;

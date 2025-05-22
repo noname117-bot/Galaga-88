@@ -6,7 +6,7 @@
 Spaceship::Spaceship()
 {
 	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
-	lives = 2;
+	lives = 3;
 	image = LoadTexture("resources/spaceship.png"); 
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
@@ -34,7 +34,23 @@ Spaceship::Spaceship()
 	explosionTimer = 0.0f;
 	explosionPosition = { 0.0f, 0.0f };
 
+	isLocked = false;
+	lockTimer = 0.0f;
 
+	state = ALIVE;
+	respawnTimer = 0.0f;
+	respawnAnimationTimer = 0.0f;
+	isRespawning = false;
+
+	respawnTexture = LoadTexture("resources/respawn.png");
+	respawnFrame = 0;
+	respawnFrameCounter = 0;
+	respawnFrameSpeed = 8;
+	respawnFrameWidth = respawnTexture.width / 2; 
+	respawnFrameHeight = respawnTexture.height;
+
+	respawnStartPosition = { (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight() + 100.0f }; 
+	respawnTargetPosition = { (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight() - 100.0f };
 }
 Spaceship::~Spaceship()
 {
@@ -42,6 +58,7 @@ Spaceship::~Spaceship()
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);
 	UnloadTexture(game_over);
+	UnloadTexture(respawnTexture);
 }
 
 void Spaceship::Reset() {
@@ -52,6 +69,13 @@ void Spaceship::Reset() {
 
 void Spaceship::Draw()
 {
+
+	if (state == RESPAWNING) {
+		DrawRespawn();
+		return;
+	}
+
+	if (state != ALIVE) return;
 
 	if (!animation)
 	{
@@ -66,15 +90,15 @@ void Spaceship::Draw()
 		
 		
 		if (isExploding) {
-			int frameWidth = explosion_spriteSheet.width / 8; // Ancho de un fotograma
-			int frameHeight = explosion_spriteSheet.height;  // Altura de un fotograma
+			int frameWidth = explosion_spriteSheet.width / 8; 
+			int frameHeight = explosion_spriteSheet.height;
 			Rectangle sourceRect = { frameWidth * explosionFrame, 0, frameWidth, frameHeight };
 			Rectangle destRect = { explosionPosition.x, explosionPosition.y, frameWidth * 4.0f, frameHeight * 4.0f };
 			DrawTexturePro(explosion_spriteSheet, sourceRect, destRect, { frameWidth * 2.0f, frameHeight * 2.0f }, 0.0f, WHITE);
 		}
 		else
 		{
-			if (lives > -1) {
+			if (lives > 0) {
 				DrawTextureEx(image, position, 0.0f, 4.0f, WHITE);
 			}
 			else 
@@ -88,7 +112,7 @@ void Spaceship::Draw()
 }	
 void Spaceship::MoveLeft()	
 {
-	position.x -= 6;
+	position.x -= 4;
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -96,7 +120,7 @@ void Spaceship::MoveLeft()
 }
 void Spaceship::MoveRight()
 {
-	position.x += 6;
+	position.x += 4;
 	float scaleWidth = image.width * 4.0f;
 	if (position.x + scaleWidth > GetScreenWidth()) {
 		position.x = GetScreenWidth() - scaleWidth;
@@ -126,9 +150,35 @@ void Spaceship::FireLaser()
 	}
 }
 
-void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mismo tiempo
+void Spaceship::Update() 
 {
 
+	if (state == RESPAWNING) {
+        UpdateRespawn();
+        return; 
+    }
+    
+    if (state != ALIVE) return;
+
+	if (isLocked) {
+		lockTimer -= GetFrameTime();
+		if (lockTimer <= 0.0f) {
+			isLocked = false;
+			lockTimer = 0.0f;
+		}
+	}
+
+	if (!isLocked) {
+		if (IsKeyDown(KEY_LEFT)) {
+			MoveLeft();
+		}
+		if (IsKeyDown(KEY_RIGHT)) {
+			MoveRight();
+		}
+	}
+
+	// Disparo (permitir disparo incluso si está bloqueada)
+	if (isExploding == false && lives > -1) FireLaser();
 
 	if (IsKeyDown(KEY_LEFT)) {
 		MoveLeft();
@@ -159,23 +209,21 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 		}
 	}
 
-	// Actualizar la animación de la explosión
+	//  la animación de la explosión
 	if (isExploding) {
 		explosionTimer += GetFrameTime();
 		if (explosionTimer >= explosionFrameTime) {
 			explosionTimer = 0.0f;
 			explosionFrame++;
 
-			// Si se completan los 8 fotogramas, desactiva la explosión
 			if (explosionFrame >= 8) {
 				explosionFrame = 0;			
 				isExploding = false;
 				lives--;
 
-				//if (lives < 1) DrawTextureEx(life1, { 135, 860 }, 0.0f, 4.0f, BLACK);
-				//if (lives < 2) DrawTextureEx(life2, { 70, 860 }, 0.0f, 4.0f, BLACK);
+			
 
-				if (lives >= 0)
+				if (lives > 0)
 				{
 					animation = false;
 					currentFrame = 0;
@@ -191,6 +239,55 @@ void Spaceship::Update() // funcion para cuando la nave se mueva dispare al mism
 			}
 		}
 	}
+}
+
+void Spaceship::LockInCenter(float duration) {
+	isLocked = true;
+	lockTimer = duration;
+	position.x = (GetScreenWidth() - frameWidth * 4.0f) / 2;
+}
+
+void Spaceship::StartRespawn() {
+	if (lives > 0) {
+		state = RESPAWNING;
+		respawnTimer = 0.0f;
+		respawnAnimationTimer = 0.0f;
+		respawnFrame = 0;
+		respawnFrameCounter = 0;
+		position = respawnStartPosition;
+		isRespawning = true;
+	}
+}
+
+void Spaceship::UpdateRespawn() {
+	if (state != RESPAWNING) return;
+
+	respawnTimer += GetFrameTime();
+	respawnFrameCounter++;
+	if (respawnFrameCounter >= (60 / respawnFrameSpeed)) {
+		respawnFrameCounter = 0;
+		respawnFrame = (respawnFrame + 1) % 2;
+	}
+
+	float animationDuration = 2.0f;
+	if (respawnTimer < animationDuration) {
+		float progress = respawnTimer / animationDuration;
+		position.y = respawnStartPosition.y + (respawnTargetPosition.y - respawnStartPosition.y) * progress;
+		position.x = respawnTargetPosition.x; 
+	}
+	else {
+		position = respawnTargetPosition;
+		state = ALIVE;
+		isRespawning = false;
+	}
+}
+
+void Spaceship::DrawRespawn() {
+	if (state != RESPAWNING) return;
+	Rectangle sourceRec = {	respawnFrame * respawnFrameWidth,	0,	respawnFrameWidth,respawnFrameHeight};
+	Rectangle destRec = {	position.x - (respawnFrameWidth * 4) / 2,position.y - (respawnFrameHeight * 4) / 2,respawnFrameWidth * 4,	respawnFrameHeight * 4};
+	Vector2 origin = { 0, 0 };
+	DrawTexturePro(respawnTexture, sourceRec, destRec, origin, 0.0f, WHITE);
 }
 
 Rectangle Spaceship::getRect()

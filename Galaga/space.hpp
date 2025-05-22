@@ -7,6 +7,13 @@
 #include "Enemy.hpp"
 //#include "UI.hpp"
 
+
+enum SpaceshipState {
+    ALIVE,
+    DYING,
+    DEAD,
+    RESPAWNING
+};
 class Spaceship {
 
 public:
@@ -17,7 +24,15 @@ public:
 	void MoveRight();
 	void FireLaser();
 	void Update();
-
+	void LockInCenter(float duration);
+	  void StartRespawn();
+    void UpdateRespawn();
+    void DrawRespawn();
+    bool IsRespawning() const { return state == RESPAWNING; }
+    bool IsDead() const { return state == DEAD; }
+    bool IsAlive() const { return state == ALIVE; }
+    void SetState(SpaceshipState newState) { state = newState; }
+    SpaceshipState GetState() const { return state; }
 	Rectangle getRect();
 
 	
@@ -35,7 +50,8 @@ public:
 	bool isGameOver;
 	
 	void Reset();
-
+	bool isLocked;
+	float lockTimer;
 
 private:
 	Texture2D image;
@@ -56,6 +72,20 @@ private:
 	bool animation;
 	int startX, startY;
 
+	SpaceshipState state;
+	float respawnTimer;
+	float respawnAnimationTimer;
+	Vector2 respawnStartPosition;
+	Vector2 respawnTargetPosition;
+	bool isRespawning;
+
+	// Para la animación del respawn
+	Texture2D respawnTexture;
+	int respawnFrame;
+	int respawnFrameCounter;
+	int respawnFrameSpeed;
+	int respawnFrameWidth;
+	int respawnFrameHeight;
 
 	// life
 	
