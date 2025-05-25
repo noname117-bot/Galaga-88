@@ -12,21 +12,32 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
     this->pathType = pathType;
     this->startFromLeft = startFromLeft;
 
+    active = false;
+
 	switch (type)
 	{
 	case 1:
 		image = LoadTexture("resources/enemies/enemy2_9.png");
+		life = 1;
 		break;
 	case 2:
 		image = LoadTexture("resources/enemies/enemy2_17.png");
+        life = 1;
 		break;
     case 3:
         image = LoadTexture("resources/enemies/bee1.png");
+        life = 1;
+        break;
+    case 4:
+        image = LoadTexture("resources/Boss/Boss1.png");
+		active = true; // El boss siempre está activo
+        life = 30;
 	}
 
 
-    currentPhase = 0;
-    active = false;
+    currentPhase = 0; 
+    
+    
 
     infinityProgress = 0.0f;
     moveSpeed = 1.0f;   //1.0f;
@@ -93,6 +104,34 @@ void Enemy::CalculateFormationOffset()
 void Enemy::Update()
 {
 
+    
+    
+    if (type == 4) {
+		active = true; // El boss siempre está activo
+        currentPhase = 1;
+        infinityProgress += 0.01f * moveSpeed;
+
+        if (infinityProgress >= 2.0f * PI) {
+			infinityProgress = 0.0f;
+           
+        }
+
+        float centerX = 512.0f;
+        float centerY = 200.0f;
+        float widthFactor = 250.0f;
+        float heightFactor = 150.0f;
+        float denominator = 1.0f + pow(sin(infinityProgress), 2);
+        float x = centerX + widthFactor * cos(infinityProgress) / denominator;
+        float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
+
+
+        position.x = x - 256;
+        position.y = y;
+
+        
+    }
+    else  
+    {
     if (!active) return;
     switch (currentPhase)
     {
@@ -107,18 +146,18 @@ void Enemy::Update()
         else {
             position.x -= moveSpeed * 2;
             if (position.x <= 800) {
-                currentPhase = 1; 
+                currentPhase = 1;
             }
         }
         break;
     }
 
-    case 1: 
+    case 1:
     {
         infinityProgress += 0.01f * moveSpeed;
 
         if (infinityProgress >= 2.0f * PI) {
-            currentPhase = 2; 
+            currentPhase = 2;
             break;
         }
 
@@ -136,18 +175,19 @@ void Enemy::Update()
 
         position.x = x;
         position.y = y;
+
         break;
     }
 
-    case 2: 
+    case 2:
     {
-        Vector2 direction = { finalPosition.x - position.x, finalPosition.y - position.y};
+        Vector2 direction = { finalPosition.x - position.x, finalPosition.y - position.y };
 
         float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
 
         if (distance < 5.0f) {
             position = finalPosition;
-            currentPhase = 3; 
+            currentPhase = 3;
             break;
         }
 
@@ -186,6 +226,7 @@ void Enemy::Update()
         position.y = basePos.y;
 
         break;
+    }
     }
     }
 }

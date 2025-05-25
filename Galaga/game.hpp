@@ -19,6 +19,7 @@ public:
     void DeleteInactiveBullet();
     void DeleteInactiveEnemyBullet();
     std::vector<Enemy> createEnemy();
+    std::vector<Enemy> createBoss();
     bool areEnemiesDefeated();
     void nextLevel();
     int getCurrentLevel();

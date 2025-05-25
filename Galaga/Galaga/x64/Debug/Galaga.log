@@ -1,6 +1,8 @@
-﻿  game.cpp
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\game.cpp(300,27): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\game.cpp(307,28): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+﻿  Enemy.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(123,27): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(168,27): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(255,57): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(255,27): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
   Galaga.vcxproj -> C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
   "pwsh.exe" no se reconoce como un comando interno o externo,
   programa o archivo por lotes ejecutable.

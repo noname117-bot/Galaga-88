@@ -104,7 +104,7 @@ void Game::Draw()
         bullet.Draw();
     }
 
-    if (currentLevel == 1) {
+    //if (currentLevel == 1) {
         for (auto& enemy_bullet : enemy_bullets) {
             enemy_bullet.Draw();
         }
@@ -112,7 +112,7 @@ void Game::Draw()
         for (auto& enemy : enemies) {
             enemy.Draw();
         }
-    }
+    //}
 
     Vector2 scorePosition = { 70, 30 };
     float scoreWidth = 120;
@@ -179,14 +179,15 @@ void Game::HandleInput()
 void Game::enemies_shot()
 {
     // Solo permitir que los enemigos disparen en el nivel 1
-    if (currentLevel != 1) {
-        return;
-    }
+    //if (currentLevel != 1) {
+    //    return;
+    //}
 
     for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
     {
         if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
-            enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x , bull->getPosition().y + 20 }, -6));
+            Rectangle enemyRect = bull->getRect();
+            enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height }, -6));
         }
     }
 }
@@ -230,19 +231,32 @@ void Game::CheckForCollisions()
 
             if (CheckCollisionRecs(enemyRect, bulletRect))
             {
+                it->life--;
+                if (it->life <1 )
+                {
                 if (it->type == 1 || it->type == 2)
                 {
                     score += 40;
+                    PlaySound(snd_explosion_red); // Reproducir sonido de explosión
                 }
-                PlaySound(snd_explosion_red); // Reproducir sonido de explosión
+
 
                 if (it->type == 3)
                 {
                     score += 50;
+                    PlaySound(snd_explosion_red);
                 }
-                PlaySound(snd_explosion_red);
+
+
+                if (it->type == 4)
+                {
+                    score += 500;
+                    PlaySound(snd_explosion_red);
+                }
+
 
                 it = enemies.erase(it);
+                }
                 bullet.active = false;
 
                 break;  // Una bala solo puede impactar un enemigo
@@ -312,13 +326,38 @@ std::vector<Enemy> Game::createEnemy()
     return enemies;
 }
 
+std::vector<Enemy> Game::createBoss()
+{
+    std::vector<Enemy> enemies;
+    int screenWidth = 1024;
+    int centerX = screenWidth / 2;
+    int spacing = 100;
+    int formationGap = 400;
+
+    float y1 = 200;
+    
+
+    float leftGroupCenter = centerX - 128; 
+
+    enemies.push_back(Enemy(4, { leftGroupCenter , y1}, 1, true));
+
+
+    return enemies;
+}
+
 bool Game::areEnemiesDefeated() {
     return enemies.empty();
 }
 
 void Game::nextLevel() {
     currentLevel++;
-    enemies = createEnemy(); 
+    if (currentLevel == 1 || currentLevel > 2) enemies = createEnemy();
+    if (currentLevel == 2) {
+        enemies = createBoss();
+        //UnloadTexture(stageSprite);
+        //stageSprite = LoadTexture("resources/Boss/Boss1_background.png");
+        //DrawTextureEx(stageSprite, { 0, 0 }, 0.0f, 4.0f, WHITE);
+    }
     levelCompleted = false; 
 
     static float enemyActivationTimer = 0;

@@ -35,7 +35,7 @@ public:
     bool IsActive(); // Verificar si está activo
     bool IsInFormation();
     Vector2 getPosition() const {  return position; }
-
+	int life; // Vida del enemigo
     void CalculateFormationOffset();
 
 private:

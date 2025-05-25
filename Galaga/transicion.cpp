@@ -62,6 +62,10 @@ Transition::~Transition()
 void Transition::Update() {
     if (finished) return;
 
+    if (IsKeyPressed(KEY_THREE)) {
+        finished = true;
+    }
+
     transitionTime += GetFrameTime();
 
     // Animación del fondo
