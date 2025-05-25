@@ -6,6 +6,8 @@ private:
 	Texture2D background1;
 	Texture2D shipSprite;
 	Texture2D spaceship;
+	Texture2D startAnnouncement;
+	Texture2D scoreTextures[10];
 
 	Texture2D score;
 
@@ -29,6 +31,14 @@ private:
 	float backgroundY;
 	int currentBackgroundFrame;
 
+	float startAnnouncementTimer;
+	const float startAnnouncementDuration = 1.5f; // Solo esta línea
+	bool showStartAnnouncement;
+	bool announcementStarted;
+
+	int currentScore;
+	void DrawScoreUI();
+
 public:
 	Transition();
 	~Transition();
@@ -36,7 +46,7 @@ public:
 	void Update();
 	void Draw();
 	bool IsFinished()const;
-
+	void SetScore(int score);
 	
 	Sound snd_animation;
 };
