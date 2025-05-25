@@ -14,6 +14,7 @@ enum GameState {
     STATE_MENU,
     STATE_TRANSITION,
     STATE_GAMEPLAY,
+    STATE_GAMEOVER_ANNOUNCEMENT,
     STATE_GAMEOVER
 };
 
@@ -24,11 +25,18 @@ int main() {
     SetTargetFPS(60);
     InitAudioDevice();
 
+    Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
+
     Texture2D background_image = LoadTexture("resources/screens/bg_stage1_2.png");
     Texture2D background_level2 = LoadTexture("resources/screens/bg_stage1_2.png");
-    Texture2D gameOverScreen = LoadTexture("resources/screens/gameOverScreen.png");
-    Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
+
+    Texture2D gameOverScreen = LoadTexture("resources/screens/gameover1.png");
+    Texture2D gameOverScreen2 = LoadTexture("resources/screens/gameover2.png");
+
+    Texture2D gameOverAnnouncement = LoadTexture("resources/UI/game_over.png");
+
     Texture2D stage2Announcement = LoadTexture("resources/UI/stage2.png"); 
+    Texture2D stage1Announcement = LoadTexture("resources/UI/stage1.png");
 
     Texture2D introAnimation = LoadTexture("resources/screens/intro-sheet.png");
 
@@ -48,6 +56,13 @@ int main() {
     float stageAnnouncementTimer = 0.0f;
     const float stageAnnouncementDuration = 2.0f;
 
+    float gameOverAnnouncementTimer = 0.0f;
+    const float gameOverAnnouncementDuration = 3.0f;
+    float gameOverAnimationProgress = 0.0f;
+    const float gameOverAnimationDuration = 1.0f; 
+    Vector2 gameOverStartPos = { 0, 0 }; 
+    Vector2 gameOverEndPos = { 0, 0 };
+
     Game game;
     Menu menu;
     GameUI ui;
@@ -56,10 +71,12 @@ int main() {
 
     int lastLives = 3; 
     ui.UpdateLives(3);
-
+    ui.UpdateLevel(1);
     float gameOverTimer = 0.0f;
     const float gameOverDelay = 15.0f;
+
     bool gameOver = false;
+    bool showStage1Announcement = true;
 
     GameState currentState = STATE_INTRO;
 
@@ -124,12 +141,19 @@ int main() {
 
         case STATE_GAMEPLAY:
         {
+           
             if (game.getSpaceship().lives <= 0) {
-                currentState = STATE_GAMEOVER;
-                gameOverTimer = 0.0f;
+                currentState = STATE_GAMEOVER_ANNOUNCEMENT;;
+                gameOverAnnouncementTimer = gameOverAnnouncementDuration;
+                gameOverAnimationProgress = 0.0f;
+                gameOverEndPos.x = (GetScreenWidth() - gameOverAnnouncement.width * scale) / 2;
+                gameOverEndPos.y = (GetScreenHeight() - gameOverAnnouncement.height * scale) / 2;
+                gameOverStartPos.x = gameOverEndPos.x; 
+                gameOverStartPos.y = -gameOverAnnouncement.height * scale;
             }
             else if (game.areEnemiesDefeated() && stageAnnouncementTimer <= 0.0f) {
                 game.nextLevel(); 
+                ui.UpdateLevel(game.getCurrentLevel());
                 stageAnnouncementTimer = stageAnnouncementDuration; 
                 game.getSpaceship().LockInCenter(1.0f);
             }
@@ -165,15 +189,22 @@ int main() {
             game.Draw();
             ui.Draw();
 
-            
+            if (showStage1Announcement && game.getCurrentLevel() == 1) {
+                Vector2 stage1Pos = { (GetScreenWidth() - stage1Announcement.width * scale) / 2,   (GetScreenHeight() - stage1Announcement.height * scale) / 2 };
+                DrawTextureEx(stage1Announcement, stage1Pos, 0.0f, scale, WHITE);
+
+                static float stage1Timer = stageAnnouncementDuration;
+                stage1Timer -= GetFrameTime();
+                if (stage1Timer <= 0.0f) {
+                    showStage1Announcement = false;
+                    stage1Timer = stageAnnouncementDuration;
+                }
+            }
+
             if (stageAnnouncementTimer > 0.0f) {
-                Vector2 stagePos = {
-                    (GetScreenWidth() - stage2Announcement.width * scale) / 2,
-                    (GetScreenHeight() - stage2Announcement.height * scale) / 2
-                };
+                Vector2 stagePos = { (GetScreenWidth() - stage2Announcement.width * scale) / 2,  (GetScreenHeight() - stage2Announcement.height * scale) / 2  };
                 DrawTextureEx(stage2Announcement, stagePos, 0.0f, scale, WHITE);
 
-                
                 stageAnnouncementTimer -= GetFrameTime();
                 if (stageAnnouncementTimer <= 0.0f) {
                     stageAnnouncementTimer = 0.0f; 
@@ -187,11 +218,52 @@ int main() {
             }
             break;
         }
+        case STATE_GAMEOVER_ANNOUNCEMENT: 
+        {
+            game.Update();
 
+            if (game.getCurrentLevel() == 1) {
+                DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
+            }
+            else {
+                DrawTextureEx(background_level2, position, 0.0f, scale, WHITE);
+            }
+
+            game.Draw();
+            ui.Draw();
+
+            if (gameOverAnimationProgress < 1.0f) {
+                gameOverAnimationProgress += GetFrameTime() / gameOverAnimationDuration;
+                if (gameOverAnimationProgress > 1.0f) {
+                    gameOverAnimationProgress = 1.0f;
+                }
+            }
+
+            float easedProgress = 1.0f - (1.0f - gameOverAnimationProgress) * (1.0f - gameOverAnimationProgress);
+            Vector2 currentGameOverPos = { gameOverStartPos.x + (gameOverEndPos.x - gameOverStartPos.x) * easedProgress,  gameOverStartPos.y + (gameOverEndPos.y - gameOverStartPos.y) * easedProgress  };
+            DrawTextureEx(gameOverAnnouncement, currentGameOverPos, 0.0f, scale, WHITE);
+
+            gameOverAnnouncementTimer -= GetFrameTime();
+
+            if (gameOverAnnouncementTimer <= 0.0f) {
+                currentState = STATE_GAMEOVER;
+                gameOverTimer = 0.0f;
+            }
+            break;
+        }
         case STATE_GAMEOVER:
         {
+
+            Texture2D currentGameOverScreen;
+            if (game.getCurrentLevel() == 1) {
+                currentGameOverScreen = gameOverScreen;
+            }
+            else {
+                currentGameOverScreen = gameOverScreen2;
+            }
+
             Vector2 gameOverPos = { (GetScreenWidth() - gameOverScreen.width * scale) / 2, (GetScreenHeight() - gameOverScreen.height * scale) / 2 };
-            DrawTextureEx(gameOverScreen, gameOverPos, 0.0f, 4.0f, WHITE);
+            DrawTextureEx(currentGameOverScreen, gameOverPos, 0.0f, 4.0f, WHITE);
             gameOverTimer += GetFrameTime();
             if (gameOverTimer >= gameOverDelay || IsKeyPressed(KEY_SPACE)) {
                 currentState = STATE_MENU;
@@ -201,9 +273,11 @@ int main() {
                 game = Game();
                 game.getSpaceship().Reset();
                 ui.UpdateLives(3); 
+                ui.UpdateLevel(1);
                 lastLives = 3;
                 FadingIn = false;
                 fadeAlpha = 1.0f;
+                showStage1Announcement = true;
             }
             break;
         }
@@ -214,10 +288,16 @@ int main() {
 
     UnloadTexture(background_image);
     UnloadTexture(background_level2);
-    UnloadTexture(gameOverScreen);
+
     UnloadTexture(intro);
     UnloadTexture(introAnimation);
+    
+    UnloadTexture(stage1Announcement);
     UnloadTexture(stage2Announcement); 
+
+    UnloadTexture(gameOverScreen);
+      UnloadTexture(gameOverScreen2);
+    UnloadTexture(gameOverAnnouncement);
 
     CloseWindow();
     return 0;

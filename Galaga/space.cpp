@@ -25,7 +25,6 @@ Spaceship::Spaceship()
 	startY = 2;
 	startX = 2;
 	
-	game_over = LoadTexture("resources/UI/game_over.png");
 	livesTexture = LoadTexture("resources/spaceship.png");
 	isGameOver = false;
 	isExploding = false;
@@ -57,7 +56,6 @@ Spaceship::~Spaceship()
 	UnloadSound(snd_bullet); 
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);
-	UnloadTexture(game_over);
 	UnloadTexture(respawnTexture);
 }
 
@@ -100,11 +98,6 @@ void Spaceship::Draw()
 		{
 			if (lives > 0) {
 				DrawTextureEx(image, position, 0.0f, 4.0f, WHITE);
-			}
-			else 
-			{
-				DrawTextureEx(game_over, { 396,400 } , 0.0f, 4.0f, WHITE);
-			
 			}
 		}
 	}

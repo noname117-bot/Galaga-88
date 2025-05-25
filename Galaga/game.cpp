@@ -22,6 +22,7 @@ Game::Game()
 
     currentLevel = 1;
     score = 0;
+    cheat = false;
     levelCompleted = false; 
 }
 
@@ -62,8 +63,26 @@ void Game::Update()
         }
     }
 
+    if (IsKeyPressed(KEY_ONE)) {
+        cheat = true;
+    }
+
+    if (IsKeyPressed(KEY_TWO)) {
+        cheat = false;
+    }
+
+    if (IsKeyPressed(KEY_THREE)) {
+        //levelCompleted = true;
+        for (auto it = enemies.begin(); it != enemies.end(); ) {
+
+                it = enemies.erase(it);
+
+        }
+
+    }
+
     enemies_shot();
-    CheckForEnemyBulletCollisions();
+    if (cheat == false) CheckForEnemyBulletCollisions();
 
     for (auto& enemy_bullet : enemy_bullets) {
         enemy_bullet.Update();

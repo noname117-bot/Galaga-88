@@ -64,7 +64,6 @@ private:
 	Texture2D explosion_spriteSheet;
 	Texture2D life1;
 	Texture2D life2;
-	Texture2D game_over;
 
 	int frameWidth, frameHeight;
 	int currentFrame;
