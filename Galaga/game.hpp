@@ -39,4 +39,5 @@ private:
     float textTimer = 0.0f;
     int currentLevel;
     bool levelCompleted;
+    bool cheat;
 };

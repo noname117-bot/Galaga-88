@@ -1,11 +1,6 @@
-﻿  main.cpp
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\Menu.hpp(1,13): warning C4081: se esperaba 'newline'; se encontró ';'
-  (compilando archivo de origen "main.cpp")
-  
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,54): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,54): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,71): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,71): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,83): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\main.cpp(116,83): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-  Galaga.vcxproj -> C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+﻿  game.cpp
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\game.cpp(300,27): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\game.cpp(307,28): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  Galaga.vcxproj -> C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
+  "pwsh.exe" no se reconoce como un comando interno o externo,
+  programa o archivo por lotes ejecutable.
