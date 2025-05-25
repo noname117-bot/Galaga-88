@@ -14,6 +14,20 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
 
     active = false;
 
+    explosion_spriteSheet = LoadTexture("resources/explosion_starhip.png");
+    isExploding = false;
+    explosionFrame = 0;
+    explosionFrameTime = 0.0f;
+    explosionTimer = 0.0f;
+    explosionPosition = { 0.0f, 0.0f };
+    dead = false;
+
+
+    currentFrame = 0;
+    frameCounter = 0;
+    animation = false;
+
+
 	switch (type)
 	{
 	case 1:
@@ -29,9 +43,15 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
         life = 1;
         break;
     case 4:
-        image = LoadTexture("resources/Boss/Boss1.png");
+        image = LoadTexture("resources/Boss/Boss1_1.png");
+        image2 = LoadTexture("resources/Boss/Boss1_2.png");
 		active = true; // El boss siempre está activo
         life = 30;
+        explosionFrameTime = 0.1f;
+
+        animation = true;
+
+        break;
 	}
 
 
@@ -104,139 +124,188 @@ void Enemy::CalculateFormationOffset()
 void Enemy::Update()
 {
 
-    
-    
-    if (type == 4) {
-		active = true; // El boss siempre está activo
-        currentPhase = 1;
-        infinityProgress += 0.01f * moveSpeed;
+    //  la animación de la explosión
+    if (isExploding) {
 
-        if (infinityProgress >= 2.0f * PI) {
-			infinityProgress = 0.0f;
-           
-        }
+        explosionTimer += GetFrameTime();
+        if (explosionTimer >= explosionFrameTime) {
+            explosionTimer = 0.0f;
+            explosionFrame++;
 
-        float centerX = 512.0f;
-        float centerY = 200.0f;
-        float widthFactor = 250.0f;
-        float heightFactor = 150.0f;
-        float denominator = 1.0f + pow(sin(infinityProgress), 2);
-        float x = centerX + widthFactor * cos(infinityProgress) / denominator;
-        float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
-
-
-        position.x = x - 256;
-        position.y = y;
-
-        
-    }
-    else  
-    {
-    if (!active) return;
-    switch (currentPhase)
-    {
-    case 0:
-    {
-        if (startFromLeft) {
-            position.x += moveSpeed * 2;
-            if (position.x >= 200) {
-                currentPhase = 1;
+            if (explosionFrame >= 8) {
+                explosionFrame = 0;
+                isExploding = false;
+                dead = true;
+                
             }
         }
-        else {
-            position.x -= moveSpeed * 2;
-            if (position.x <= 800) {
-                currentPhase = 1;
+    }
+    else
+    {
+        if (type == 4) {
+            active = true; // El boss siempre está activo
+            currentPhase = 1;
+            infinityProgress += 0.01f * moveSpeed;
+
+            if (infinityProgress >= 2.0f * PI) {
+                infinityProgress = 0.0f;
+
+            }
+
+            float centerX = 512.0f;
+            float centerY = 200.0f;
+            float widthFactor = 250.0f;
+            float heightFactor = 150.0f;
+            float denominator = 1.0f + pow(sin(infinityProgress), 2);
+            float x = centerX + widthFactor * cos(infinityProgress) / denominator;
+            float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
+
+
+            position.x = x - 256;
+            position.y = y;
+
+
+        }
+        else
+        {
+            if (!active) return;
+            switch (currentPhase)
+            {
+            case 0:
+            {
+                if (startFromLeft) {
+                    position.x += moveSpeed * 2;
+                    if (position.x >= 200) {
+                        currentPhase = 1;
+                    }
+                }
+                else {
+                    position.x -= moveSpeed * 2;
+                    if (position.x <= 800) {
+                        currentPhase = 1;
+                    }
+                }
+                break;
+            }
+
+            case 1:
+            {
+                infinityProgress += 0.01f * moveSpeed;
+
+                if (infinityProgress >= 2.0f * PI) {
+                    currentPhase = 2;
+                    break;
+                }
+
+                float centerX = 512.0f;
+                float centerY = 400.0f;
+                float widthFactor = 250.0f;
+                float heightFactor = 150.0f;
+                float denominator = 1.0f + pow(sin(infinityProgress), 2);
+                float x = centerX + widthFactor * cos(infinityProgress) / denominator;
+                float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
+
+                if (pathType == 1) {
+                    x = 2 * centerX - x;
+                }
+
+                position.x = x;
+                position.y = y;
+
+                break;
+            }
+
+            case 2:
+            {
+                Vector2 direction = { finalPosition.x - position.x, finalPosition.y - position.y };
+
+                float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
+
+                if (distance < 5.0f) {
+                    position = finalPosition;
+                    currentPhase = 3;
+                    break;
+                }
+
+                direction.x /= distance;
+                direction.y /= distance;
+                position.x += direction.x * moveSpeed * 2;
+                position.y += direction.y * moveSpeed * 2;
+                break;
+            }
+
+            case 3:
+            {
+                formationMoveTimer += GetFrameTime();
+
+                Vector2 basePos = {
+                    finalPosition.x + formationOffset.x,
+                    finalPosition.y + formationOffset.y
+                };
+
+                // Cambiar dirección cada segundo
+                if (formationMoveTimer >= 1.0f) {
+                    movingRight = !movingRight;
+                    formationMoveTimer = 0;
+                }
+
+                // Movimiento lateral más amplio
+                float lateralMovement = 1.2f; // antes era 0.5f
+                if (movingRight) {
+                    position.x += lateralMovement;
+                }
+                else {
+                    position.x -= lateralMovement;
+                }
+
+                // Quitamos el efecto de hover
+                position.y = basePos.y;
+
+                break;
+            }
             }
         }
-        break;
-    }
-
-    case 1:
-    {
-        infinityProgress += 0.01f * moveSpeed;
-
-        if (infinityProgress >= 2.0f * PI) {
-            currentPhase = 2;
-            break;
-        }
-
-        float centerX = 512.0f;
-        float centerY = 400.0f;
-        float widthFactor = 250.0f;
-        float heightFactor = 150.0f;
-        float denominator = 1.0f + pow(sin(infinityProgress), 2);
-        float x = centerX + widthFactor * cos(infinityProgress) / denominator;
-        float y = centerY + heightFactor * sin(infinityProgress) * cos(infinityProgress) / denominator;
-
-        if (pathType == 1) {
-            x = 2 * centerX - x;
-        }
-
-        position.x = x;
-        position.y = y;
-
-        break;
-    }
-
-    case 2:
-    {
-        Vector2 direction = { finalPosition.x - position.x, finalPosition.y - position.y };
-
-        float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
-
-        if (distance < 5.0f) {
-            position = finalPosition;
-            currentPhase = 3;
-            break;
-        }
-
-        direction.x /= distance;
-        direction.y /= distance;
-        position.x += direction.x * moveSpeed * 2;
-        position.y += direction.y * moveSpeed * 2;
-        break;
-    }
-
-    case 3:
-    {
-        formationMoveTimer += GetFrameTime();
-
-        Vector2 basePos = {
-            finalPosition.x + formationOffset.x,
-            finalPosition.y + formationOffset.y
-        };
-
-        // Cambiar dirección cada segundo
-        if (formationMoveTimer >= 1.0f) {
-            movingRight = !movingRight;
-            formationMoveTimer = 0;
-        }
-
-        // Movimiento lateral más amplio
-        float lateralMovement = 1.2f; // antes era 0.5f
-        if (movingRight) {
-            position.x += lateralMovement;
-        }
-        else {
-            position.x -= lateralMovement;
-        }
-
-        // Quitamos el efecto de hover
-        position.y = basePos.y;
-
-        break;
-    }
-    }
     }
 }
 
 void Enemy::Draw()
 {
     Color debugColor;
+    
+    if (isExploding) {
+        int frameWidth = explosion_spriteSheet.width / 8;
+        int frameHeight = explosion_spriteSheet.height;
+        Rectangle sourceRect = { frameWidth * explosionFrame, 0, frameWidth, frameHeight };
+        Rectangle destRect = { explosionPosition.x, explosionPosition.y, frameWidth * 4.0f, frameHeight * 4.0f };
+        DrawTexturePro(explosion_spriteSheet, sourceRect, destRect, { frameWidth * 2.0f, frameHeight * 2.0f }, 0.0f, WHITE);
+    }
+    else
+    {
+        if (life > 0) { 
+            if (animation == false) {
+                DrawTextureEx(image, position, 0.0f, 4.0, WHITE);
+            }
+            else
+            {
+                frameCounter++;
+                if (frameCounter > 9) {  
+                    frameCounter = 0;
+                    currentFrame++;
+                    if (currentFrame > 1) {
+                        currentFrame = 0;
+                    }
 
-	DrawTextureEx(image, position, 0.0f, 4.0, WHITE);
+                }
+                if (currentFrame == 0 ) DrawTextureEx(image2, position, 0.0f, 4.0, WHITE); else DrawTextureEx(image, position, 0.0f, 4.0, WHITE);
+                
+            }
+        }
 
+        
+    }
+     
+   // DrawTextureEx(image, position, 0.0f, 4.0, WHITE);
+    
     switch (currentPhase) {
     case 0: // ENTERING
         debugColor = RED;

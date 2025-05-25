@@ -28,7 +28,7 @@ int main() {
     Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
 
     Texture2D background_image = LoadTexture("resources/screens/bg_stage1_2.png");
-    Texture2D background_level2 = LoadTexture("resources/screens/bg_stage1_2.png");
+    Texture2D background_level2 = LoadTexture("resources/screens/Boss1_background.png");
 
     Texture2D gameOverScreen = LoadTexture("resources/screens/gameover1.png");
     Texture2D gameOverScreen2 = LoadTexture("resources/screens/gameover2.png");

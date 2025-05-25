@@ -37,6 +37,13 @@ public:
     Vector2 getPosition() const {  return position; }
 	int life; // Vida del enemigo
     void CalculateFormationOffset();
+    Texture2D explosion_spriteSheet;
+    bool isExploding;          // Indica si la explosión está activa
+    int explosionFrame;        // Fotograma actual de la explosión
+    float explosionFrameTime;  // Tiempo entre fotogramas
+    float explosionTimer;      // Temporizador para cambiar de fotograma
+    Vector2 explosionPosition; // Posición de la explosión
+    bool dead; 
 
 private:
     Vector2 position;
@@ -47,6 +54,7 @@ private:
     float infinityProgress;
     float moveSpeed;
     Texture2D image;
+    Texture2D image2;
     bool active;
 
     float formationPhase;
@@ -56,4 +64,10 @@ private:
 
     bool movingRight;
     float formationMoveTimer;
+
+
+    int currentFrame;
+    int frameCounter;
+    bool animation;
+
 };

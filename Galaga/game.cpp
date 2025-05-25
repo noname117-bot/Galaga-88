@@ -24,13 +24,14 @@ Game::Game()
     score = 0;
     cheat = false;
     levelCompleted = false; 
+    
 }
 
 Game::~Game()
 {
     UnloadSound(snd_explosion_red);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++) 
     {
         UnloadTexture(scoreTextures[i]);
     }
@@ -58,10 +59,12 @@ void Game::Update()
     }
 
     for (auto& enemy : enemies) {
-        if (enemy.IsActive()) {
+        if (enemy.IsActive() || enemy.isExploding == true) {
             enemy.Update();
         }
     }
+
+
 
     if (IsKeyPressed(KEY_ONE)) {
         cheat = true;
@@ -80,7 +83,7 @@ void Game::Update()
         }
 
     }
-
+     
     enemies_shot();
     if (cheat == false) CheckForEnemyBulletCollisions();
 
@@ -91,6 +94,18 @@ void Game::Update()
     DeleteInactiveEnemyBullet();
     DeleteInactiveBullet();
     CheckForCollisions();
+
+    for (auto it = enemies.begin(); it != enemies.end(); ) {
+
+        if (it->dead == true)
+        {
+            it->dead = false;
+            it = enemies.erase(it);
+
+        }
+        else ++it;
+
+    }
 
     if (areEnemiesDefeated() && !levelCompleted) {
         levelCompleted = true;
@@ -185,6 +200,18 @@ void Game::enemies_shot()
 
     for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
     {
+        if (bull->isExploding == false )
+        if (bull->type == 4) {
+
+            if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
+                Rectangle enemyRect = bull->getRect();
+                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height }, -6));
+                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 60 }, -6));
+                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 120 }, -6));
+                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 180 }, -6));
+            }
+        }
+        else
         if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
             Rectangle enemyRect = bull->getRect();
             enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height }, -6));
@@ -229,7 +256,7 @@ void Game::CheckForCollisions()
         {
             Rectangle enemyRect = it->getRect();
 
-            if (CheckCollisionRecs(enemyRect, bulletRect))
+            if (it->life > 0 && CheckCollisionRecs(enemyRect, bulletRect))
             {
                 it->life--;
                 if (it->life <1 )
@@ -238,6 +265,9 @@ void Game::CheckForCollisions()
                 {
                     score += 40;
                     PlaySound(snd_explosion_red); // Reproducir sonido de explosión
+                    it->isExploding = true;
+                    it->explosionPosition = { enemyRect.x + 20 + enemyRect.width / 2, enemyRect.y + 20 + enemyRect.height / 2 };
+                    //break;
                 }
 
 
@@ -251,11 +281,14 @@ void Game::CheckForCollisions()
                 if (it->type == 4)
                 {
                     score += 500;
-                    PlaySound(snd_explosion_red);
+                    PlaySound(snd_shipExplosion);
+                    it->isExploding = true;
+                    it->explosionPosition = { enemyRect.x + 20 + enemyRect.width / 2, enemyRect.y + 20 + enemyRect.height / 2 };
+                    //break;
                 }
 
 
-                it = enemies.erase(it);
+                //it = enemies.erase(it);
                 }
                 bullet.active = false;
 
@@ -354,12 +387,14 @@ void Game::nextLevel() {
     if (currentLevel == 1 || currentLevel > 2) enemies = createEnemy();
     if (currentLevel == 2) {
         enemies = createBoss();
-        //UnloadTexture(stageSprite);
-        //stageSprite = LoadTexture("resources/Boss/Boss1_background.png");
-        //DrawTextureEx(stageSprite, { 0, 0 }, 0.0f, 4.0f, WHITE);
     }
     levelCompleted = false; 
-
+    for (auto& bullet : enemy_bullets) {
+        bullet.active = false;
+    }
+    for (auto& bullet : spaceship.bullets) {
+        bullet.active = false;
+    }
     static float enemyActivationTimer = 0;
     static int nextEnemyToActivate = 0;
     enemyActivationTimer = 0;
