@@ -1,17 +1,29 @@
 #include "game.hpp"
-#include "enemy.hpp"
+#include "Enemy.hpp"
 #include "bullet.hpp"
 #include "enemy_bullet.hpp"
 #include <iostream>
 #include <vector>
-
 
 Game::Game()
 {
     snd_explosion_red = LoadSound("resources/sound_effects/explosion_red.wav");
     snd_shipExplosion = LoadSound("resources/sound_effects/explosion_starship.wav");
     startSprite = LoadTexture("resources/UI/start.png");
-    stageSprite = LoadTexture("resources/UI/stage1.png");
+
+    levelAnnouncementTimer = 0.0f;
+    showingLevelAnnouncement = true;
+    enemiesCanAppear = false;
+
+    globalShootTimer = 0.0f;
+    timeBetweenShots = 1.0f;  // 1.2 segundos entre cada disparo (ajustable)
+    currentShooterIndex = 0;
+
+    specialMovementTimer = 0.0f;
+    minTimeBetweenSpecialMoves = 5.0f;  // Mínimo 5 segundos
+    maxTimeBetweenSpecialMoves = 10.0f; // Máximo 10 segundos
+    nextSpecialMoveTime = GetRandomValue((int)minTimeBetweenSpecialMoves, (int)maxTimeBetweenSpecialMoves);
+
     enemies = createEnemy();
 
     for (int i = 0; i < 10; i++) {
@@ -23,15 +35,18 @@ Game::Game()
     currentLevel = 1;
     score = 0;
     cheat = false;
-    levelCompleted = false; 
-    
+    levelCompleted = false;
+
+    // Variables para el movimiento sincronizado de la formación
+    formationMoveTimer = 0.0f;
+    formationMovingRight = true;
 }
 
 Game::~Game()
 {
     UnloadSound(snd_explosion_red);
 
-    for (int i = 0; i < 10; i++) 
+    for (int i = 0; i < 10; i++)
     {
         UnloadTexture(scoreTextures[i]);
     }
@@ -39,18 +54,42 @@ Game::~Game()
 
 void Game::Update()
 {
-    static float enemyActivationTimer = 0;
-    static int nextEnemyToActivate = 0;
+    // CONTROLAR EL ANUNCIO DEL NIVEL Y APARICIÓN DE ENEMIGOS
+    if (showingLevelAnnouncement) {
+        levelAnnouncementTimer += GetFrameTime();
 
-    if (nextEnemyToActivate < enemies.size()) {
-        enemyActivationTimer += GetFrameTime();
+        // Después de 2 segundos, permitir que aparezcan los enemigos
+        if (levelAnnouncementTimer >= 2.0f) {
+            showingLevelAnnouncement = false;
+            enemiesCanAppear = true;
+        }
 
-        if (enemyActivationTimer >= 1.0f) {
-            enemies[nextEnemyToActivate].Activate();
-            nextEnemyToActivate++;
-            enemyActivationTimer = 0;
+        // Durante el anuncio, no actualizar enemigos
+        spaceship.Update();
+        for (auto& bullet : spaceship.bullets) {
+            bullet.Update();
+        }
+        return; // Salir temprano, no procesar enemigos todavía
+    }
+
+    // ACTIVAR TODOS LOS ENEMIGOS A LA VEZ - SOLO SI YA PUEDEN APARECER
+    if (!enemies.empty() && enemiesCanAppear) {
+        bool allActivated = true;
+        for (auto& enemy : enemies) {
+            if (enemy.GetType() != 4 && !enemy.IsActive()) {
+                allActivated = false;
+                break;
+            }
+        }
+        if (!allActivated) {
+            for (auto& enemy : enemies) {
+                if (enemy.GetType() != 4) {
+                    enemy.Activate();
+                }
+            }
         }
     }
+
     textTimer += GetFrameTime();
 
     spaceship.Update();
@@ -58,13 +97,23 @@ void Game::Update()
         bullet.Update();
     }
 
-    for (auto& enemy : enemies) {
-        if (enemy.IsActive() || enemy.isExploding == true) {
-            enemy.Update();
+    // Actualizar enemigos individualmente - SOLO SI PUEDEN APARECER
+    if (enemiesCanAppear) {
+        for (auto& enemy : enemies) {
+            if (enemy.IsActive() || enemy.isExploding == true) {
+                enemy.Update();
+            }
         }
+
+        // CONTROLAR MOVIMIENTO SINCRONIZADO DE LA FORMACIÓN
+        UpdateFormation();
+
+        // ? NUEVO: CONTROLAR MOVIMIENTOS ESPECIALES
+        UpdateSpecialMovements();
+
+        // CONTROLAR DISPAROS ALTERNADOS
+        UpdateEnemyShooting();
     }
-
-
 
     if (IsKeyPressed(KEY_ONE)) {
         cheat = true;
@@ -75,17 +124,22 @@ void Game::Update()
     }
 
     if (IsKeyPressed(KEY_THREE)) {
-        //levelCompleted = true;
         for (auto it = enemies.begin(); it != enemies.end(); ) {
-
-                it = enemies.erase(it);
-
+            it = enemies.erase(it);
         }
-
     }
-     
-    enemies_shot();
-    if (cheat == false) CheckForEnemyBulletCollisions();
+
+    // ? COMENTAR O ELIMINAR LA FUNCIÓN ANTIGUA DE DISPAROS
+    // Solo procesar disparos enemigos si pueden aparecer
+    // if (enemiesCanAppear) {
+    //     enemies_shot(); // ? COMENTAR ESTA LÍNEA - YA NO LA USAMOS
+    //     if (cheat == false) CheckForEnemyBulletCollisions();
+    // }
+
+    // ? MANTENER SOLO LA VERIFICACIÓN DE COLISIONES
+    if (enemiesCanAppear && cheat == false) {
+        CheckForEnemyBulletCollisions();
+    }
 
     for (auto& enemy_bullet : enemy_bullets) {
         enemy_bullet.Update();
@@ -93,18 +147,19 @@ void Game::Update()
 
     DeleteInactiveEnemyBullet();
     DeleteInactiveBullet();
-    CheckForCollisions();
+
+    // Solo verificar colisiones si los enemigos pueden aparecer
+    if (enemiesCanAppear) {
+        CheckForCollisions();
+    }
 
     for (auto it = enemies.begin(); it != enemies.end(); ) {
-
         if (it->dead == true)
         {
             it->dead = false;
             it = enemies.erase(it);
-
         }
         else ++it;
-
     }
 
     if (areEnemiesDefeated() && !levelCompleted) {
@@ -112,6 +167,122 @@ void Game::Update()
     }
 }
 
+// ? NUEVA FUNCIÓN: Controlar el sistema de disparos alternados
+void Game::UpdateEnemyShooting()
+{
+    globalShootTimer += GetFrameTime();
+
+    // Solo permitir un disparo cada timeBetweenShots segundos
+    if (globalShootTimer >= timeBetweenShots) {
+
+        // Buscar el siguiente enemigo que pueda disparar
+        bool shotFired = false;
+        int attempts = 0;
+        int maxAttempts = enemies.size(); // Evitar bucle infinito
+
+        while (!shotFired && attempts < maxAttempts) {
+            // Verificar si hay enemigos
+            if (enemies.empty()) break;
+
+            // Asegurar que el índice esté en rango
+            if (currentShooterIndex >= enemies.size()) {
+                currentShooterIndex = 0;
+            }
+
+            // Verificar si este enemigo puede disparar
+            if (enemies[currentShooterIndex].CanShoot()) {
+                // Crear la bala
+                Vector2 shootPos = enemies[currentShooterIndex].GetShootPosition();
+
+                // Para el boss (tipo 4), disparar múltiples balas
+                if (enemies[currentShooterIndex].GetType() == 4) {
+                    enemy_bullets.push_back(enemy_Bullet(shootPos, -6));
+                    enemy_bullets.push_back(enemy_Bullet({ shootPos.x, shootPos.y - 60 }, -6));
+                    enemy_bullets.push_back(enemy_Bullet({ shootPos.x, shootPos.y - 120 }, -6));
+                    enemy_bullets.push_back(enemy_Bullet({ shootPos.x, shootPos.y - 180 }, -6));
+                }
+                else {
+                    // Enemigos normales: una sola bala
+                    enemy_bullets.push_back(enemy_Bullet(shootPos, -6));
+                }
+
+                // Marcar que el enemigo disparó
+                enemies[currentShooterIndex].SetShot();
+
+                shotFired = true;
+                globalShootTimer = 0.0f; // Reiniciar temporizador global
+            }
+
+            // Pasar al siguiente enemigo
+            currentShooterIndex++;
+            if (currentShooterIndex >= enemies.size()) {
+                currentShooterIndex = 0;
+            }
+
+            attempts++;
+        }
+    }
+}
+
+// NUEVA FUNCIÓN PARA CONTROLAR EL MOVIMIENTO SINCRONIZADO
+void Game::UpdateFormation()
+{
+    // Contar cuántos enemigos están en formación (excluyendo los en movimiento especial)
+    int enemiesInFormation = 0;
+    for (auto& enemy : enemies) {
+        if (enemy.IsInFormation() && !enemy.isExploding &&
+            enemy.GetType() != 4 && !enemy.IsInSpecialMovement()) {
+            enemiesInFormation++;
+        }
+    }
+
+    if (enemiesInFormation > 0) {
+        formationMoveTimer += GetFrameTime();
+
+        if (formationMoveTimer >= 2.5f) {
+            formationMovingRight = !formationMovingRight;
+            formationMoveTimer = 0.0f;
+        }
+
+        float lateralSpeed = 1.2f;
+        float deltaX = 0.0f;
+
+        float leftMost = 896.0f;
+        float rightMost = 0.0f;
+        float enemyWidth = 32.0f * 4.0f;
+        float rightMargin = 40.0f;
+        float leftMargin = 20.0f;
+
+        // ? MODIFICAR PARA EXCLUIR ENEMIGOS EN MOVIMIENTO ESPECIAL
+        for (auto& enemy : enemies) {
+            if (enemy.IsInFormation() && !enemy.isExploding &&
+                enemy.GetType() != 4 && !enemy.IsInSpecialMovement()) {
+                Vector2 pos = enemy.getPosition();
+                if (pos.x < leftMost) leftMost = pos.x;
+                if (pos.x + enemyWidth > rightMost) rightMost = pos.x + enemyWidth;
+            }
+        }
+
+        if (formationMovingRight) {
+            if (rightMost < (896 - rightMargin)) {
+                deltaX = lateralSpeed;
+            }
+        }
+        else {
+            if (leftMost > leftMargin) {
+                deltaX = -lateralSpeed;
+            }
+        }
+
+        // ? APLICAR MOVIMIENTO SOLO A ENEMIGOS NO EN MOVIMIENTO ESPECIAL
+        for (auto& enemy : enemies) {
+            if (enemy.IsInFormation() && !enemy.isExploding &&
+                enemy.GetType() != 4 && !enemy.IsInSpecialMovement()) {
+                enemy.MoveInFormation(deltaX, 0.0f);
+            }
+        }
+    }
+}
 void Game::Draw()
 {
     spaceship.Draw();
@@ -119,15 +290,15 @@ void Game::Draw()
         bullet.Draw();
     }
 
-    //if (currentLevel == 1) {
-        for (auto& enemy_bullet : enemy_bullets) {
-            enemy_bullet.Draw();
-        }
+    for (auto& enemy_bullet : enemy_bullets) {
+        enemy_bullet.Draw();
+    }
 
+    if (enemiesCanAppear) {
         for (auto& enemy : enemies) {
             enemy.Draw();
         }
-    //}
+    }
 
     Vector2 scorePosition = { 70, 30 };
     float scoreWidth = 120;
@@ -139,7 +310,7 @@ void Game::Draw()
 
     int tempScore = score;
 
-    float spacing = 5.0f; // espacio entre dígitos
+    float spacing = 5.0f;
     float totalWidth = digitWidth * 4 + spacing * 3;
 
     if (tempScore == 0) {
@@ -166,16 +337,80 @@ void Game::Draw()
     }
 }
 
+void Game::UpdateSpecialMovements()
+{
+    specialMovementTimer += GetFrameTime();
+
+    // Verificar si es hora de activar un movimiento especial
+    if (specialMovementTimer >= nextSpecialMoveTime) {
+        TriggerRandomSpecialMovement();
+
+        // Reiniciar timer y establecer próximo tiempo aleatorio
+        specialMovementTimer = 0.0f;
+        nextSpecialMoveTime = minTimeBetweenSpecialMoves +
+            (float)GetRandomValue(0, (int)((maxTimeBetweenSpecialMoves - minTimeBetweenSpecialMoves) * 10)) / 10.0f;
+    }
+}
+
+void Game::TriggerRandomSpecialMovement()
+{
+    // Obtener lista de enemigos que pueden hacer movimiento especial
+    std::vector<int> availableEnemies = GetEnemiesInFormation();
+
+    if (availableEnemies.empty()) return;
+
+    // Seleccionar un enemigo aleatorio
+    int randomIndex = GetRandomValue(0, availableEnemies.size() - 1);
+    int selectedEnemyIndex = availableEnemies[randomIndex];
+
+    // Activar movimiento especial
+    enemies[selectedEnemyIndex].StartSpecialMovement();
+}
+
+std::vector<int> Game::GetEnemiesInFormation()
+{
+    std::vector<int> formationEnemies;
+
+    for (int i = 0; i < enemies.size(); i++) {
+        // Solo enemigos que están en formación, no el boss, no en movimiento especial, no explotando
+        if (enemies[i].IsInFormation() &&
+            enemies[i].GetType() != 4 &&
+            !enemies[i].IsInSpecialMovement() &&
+            !enemies[i].isExploding &&
+            enemies[i].life > 0) {
+
+            formationEnemies.push_back(i);
+        }
+    }
+
+    return formationEnemies;
+}
+
 void Game::Reset() {
     for (int i = 0; i < 10; i++)
     {
         UnloadTexture(scoreTextures[i]);
     }
+
     currentLevel = 1;
     enemies = createEnemy();
     score = 0;
     spaceship.Reset();
-    levelCompleted = false; 
+    levelCompleted = false;
+
+    levelAnnouncementTimer = 0.0f;
+    showingLevelAnnouncement = true;
+    enemiesCanAppear = false;
+
+    formationMoveTimer = 0.0f;
+    formationMovingRight = true;
+
+    globalShootTimer = 0.0f;
+    currentShooterIndex = 0;
+
+    specialMovementTimer = 0.0f;
+    nextSpecialMoveTime = GetRandomValue((int)minTimeBetweenSpecialMoves, (int)maxTimeBetweenSpecialMoves);
+
 }
 
 void Game::HandleInput()
@@ -191,31 +426,18 @@ void Game::HandleInput()
     }
 }
 
-void Game::enemies_shot()
-{
-    // Solo permitir que los enemigos disparen en el nivel 1
-    //if (currentLevel != 1) {
-    //    return;
-    //}
+bool Game::IsShowingLevelAnnouncement() const {
+    return showingLevelAnnouncement;
+}
 
-    for (auto bull = enemies.begin(); bull != enemies.end(); ++bull)
-    {
-        if (bull->isExploding == false )
-        if (bull->type == 4) {
-
-            if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
-                Rectangle enemyRect = bull->getRect();
-                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height }, -6));
-                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 60 }, -6));
-                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 120 }, -6));
-                enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height - 180 }, -6));
-            }
-        }
-        else
-        if (GetRandomValue(0, 100) < 0.01) { // Probabilidad de disparar de cada enemigo
-            Rectangle enemyRect = bull->getRect();
-            enemy_bullets.push_back(enemy_Bullet({ bull->getPosition().x + enemyRect.width / 2 , bull->getPosition().y + enemyRect.height }, -6));
-        }
+void Game::SetShowingLevelAnnouncement(bool showing) {
+    showingLevelAnnouncement = showing;
+    if (showing) {
+        levelAnnouncementTimer = 0.0f;
+        enemiesCanAppear = false;
+    }
+    else {
+        enemiesCanAppear = true;
     }
 }
 
@@ -229,7 +451,6 @@ void Game::CheckForEnemyBulletCollisions()
             Rectangle spaceshipRect = spaceship.getRect();
 
             if (CheckCollisionRecs(spaceshipRect, bulletRect)) {
-
                 for (auto& bullet : enemy_bullets) {
                     bullet.active = false;
                 }
@@ -237,7 +458,7 @@ void Game::CheckForEnemyBulletCollisions()
                 spaceship.isExploding = true;
                 spaceship.explosionPosition = { spaceshipRect.x + 20 + spaceshipRect.width / 2, spaceshipRect.y + 20 + spaceshipRect.height / 2 };
 
-                PlaySound(snd_shipExplosion); // Reproducir sonido de explosión
+                PlaySound(snd_shipExplosion);
                 break;
             }
         }
@@ -259,40 +480,45 @@ void Game::CheckForCollisions()
             if (it->life > 0 && CheckCollisionRecs(enemyRect, bulletRect))
             {
                 it->life--;
-                if (it->life <1 )
+                if (it->life < 1)
                 {
-                if (it->type == 1 || it->type == 2)
-                {
-                    score += 40;
-                    PlaySound(snd_explosion_red); // Reproducir sonido de explosión
-                    it->isExploding = true;
-                    it->explosionPosition = { enemyRect.x + 20 + enemyRect.width / 2, enemyRect.y + 20 + enemyRect.height / 2 };
-                    //break;
-                }
+                    switch (it->type) {
+                    case 1:
+                        score += 40;
+                        break;
+                    case 2:
+                        score += 20;
+                        break;
+                    case 3:
+                        score += 50;
+                        break;
+                    case 5:
+                        score += 30;
+                        break;
+                    case 4:
+                        score += 1000;
+                        break;
+                    }
 
-
-                if (it->type == 3)
-                {
-                    score += 50;
-                    PlaySound(snd_explosion_red);
-                }
-
-
-                if (it->type == 4)
-                {
-                    score += 500;
-                    PlaySound(snd_shipExplosion);
-                    it->isExploding = true;
-                    it->explosionPosition = { enemyRect.x + 20 + enemyRect.width / 2, enemyRect.y + 20 + enemyRect.height / 2 };
-                    //break;
-                }
-
-
-                //it = enemies.erase(it);
+                    if (it->type != 4) {
+                        PlaySound(snd_explosion_red);
+                        it->isExploding = true;
+                        it->explosionPosition = {
+                            enemyRect.x + 20 + enemyRect.width / 2,
+                            enemyRect.y + 20 + enemyRect.height / 2
+                        };
+                    }
+                    else {
+                        PlaySound(snd_shipExplosion);
+                        it->isExploding = true;
+                        it->explosionPosition = {
+                            enemyRect.x + 20 + enemyRect.width / 2,
+                            enemyRect.y + 20 + enemyRect.height / 2
+                        };
+                    }
                 }
                 bullet.active = false;
-
-                break;  // Una bala solo puede impactar un enemigo
+                break;
             }
             else
             {
@@ -333,28 +559,73 @@ void Game::DeleteInactiveEnemyBullet()
 std::vector<Enemy> Game::createEnemy()
 {
     std::vector<Enemy> enemies;
-    int screenWidth = 1024;
-    int centerX = screenWidth / 2;
-    int spacing = 100;
-    int formationGap = 400;
 
-    float y1 = 200;
-    float y2 = 255;
+    int screenWidth = 896;
 
-    float leftGroupCenter = centerX - (formationGap / 2);
+    float spacingX = 75.0f; 
+    float spacingY = 58.0f; 
 
-    enemies.push_back(Enemy(1, { leftGroupCenter - spacing / 2, y1 }, 0, true));
-    enemies.push_back(Enemy(1, { leftGroupCenter + spacing / 2, y1 }, 0, true));
-    enemies.push_back(Enemy(1, { leftGroupCenter - spacing, y2 }, 1, true));
-    enemies.push_back(Enemy(1, { leftGroupCenter, y2 }, 1, true));
+    int columns = 10;
+    int rows = 5;
 
-    float rightGroupCenter = centerX + (formationGap / 2);
+    float totalFormationWidth = (columns - 1) * spacingX;
 
-    // pathType=0 para los enemigos de la derecha y startFromLeft=false
-    enemies.push_back(Enemy(1, { rightGroupCenter - spacing / 2, y1 }, 0, false));
-    enemies.push_back(Enemy(1, { rightGroupCenter + spacing / 2, y1 }, 0, false));
-    enemies.push_back(Enemy(1, { rightGroupCenter, y2 }, 1, false));
-    enemies.push_back(Enemy(1, { rightGroupCenter + spacing, y2 }, 1, false));
+    float startX = (screenWidth - totalFormationWidth) / 2;
+    float startY = 120.0f;
+
+    for (int i = 3; i < 7; i++) { 
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY };
+
+        Enemy enemy(3, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY };
+        enemies.push_back(enemy);
+    }
+
+    for (int i = 2; i < 8; i++) { 
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY + spacingY };
+
+        Enemy enemy(5, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY + spacingY };
+        enemies.push_back(enemy);
+    }
+
+    for (int i = 1; i < 9; i++) {
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY + 2 * spacingY };
+
+        Enemy enemy(2, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY + 2 * spacingY };
+        enemies.push_back(enemy);
+    }
+
+    for (int i = 1; i < 9; i++) {
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY + 3 * spacingY };
+
+        Enemy enemy(2, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY + 3 * spacingY };
+        enemies.push_back(enemy);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY + 4 * spacingY };
+
+        Enemy enemy(1, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY + 4 * spacingY };
+        enemies.push_back(enemy);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        float x = startX + i * spacingX;
+        Vector2 startPos = { (i < 5) ? -100.0f : (float)screenWidth + 100.0f, startY + 5 * spacingY };
+
+        Enemy enemy(1, startPos, 0, i < 5);
+        enemy.finalPosition = { x, startY + 5 * spacingY };
+        enemies.push_back(enemy);
+    }
 
     return enemies;
 }
@@ -364,16 +635,10 @@ std::vector<Enemy> Game::createBoss()
     std::vector<Enemy> enemies;
     int screenWidth = 1024;
     int centerX = screenWidth / 2;
-    int spacing = 100;
-    int formationGap = 400;
-
     float y1 = 200;
-    
+    float leftGroupCenter = centerX - 128;
 
-    float leftGroupCenter = centerX - 128; 
-
-    enemies.push_back(Enemy(4, { leftGroupCenter , y1}, 1, true));
-
+    enemies.push_back(Enemy(4, { leftGroupCenter , y1 }, 1, true));
 
     return enemies;
 }
@@ -384,21 +649,41 @@ bool Game::areEnemiesDefeated() {
 
 void Game::nextLevel() {
     currentLevel++;
-    if (currentLevel == 1 || currentLevel > 2) enemies = createEnemy();
-    if (currentLevel == 2) {
-        enemies = createBoss();
+
+    levelAnnouncementTimer = 0.0f;
+    showingLevelAnnouncement = true;
+    enemiesCanAppear = false;
+
+    formationMoveTimer = 0.0f;
+    formationMovingRight = true;
+
+    globalShootTimer = 0.0f;
+    currentShooterIndex = 0;
+
+    specialMovementTimer = 0.0f;
+    nextSpecialMoveTime = GetRandomValue((int)minTimeBetweenSpecialMoves, (int)maxTimeBetweenSpecialMoves);
+
+    if (currentLevel == 1) {
+        enemies = createEnemy();
     }
-    levelCompleted = false; 
+    else if (currentLevel == 2) {
+        enemies = createEnemy();
+    }
+    else if (currentLevel == 3) {
+        enemies = createBoss();
+        levelAnnouncementTimer = 1.5f; 
+    }
+    else {
+        enemies.clear();
+    }
+
+    levelCompleted = false;
     for (auto& bullet : enemy_bullets) {
         bullet.active = false;
     }
     for (auto& bullet : spaceship.bullets) {
         bullet.active = false;
     }
-    static float enemyActivationTimer = 0;
-    static int nextEnemyToActivate = 0;
-    enemyActivationTimer = 0;
-    nextEnemyToActivate = 0;
 }
 
 int Game::getCurrentLevel() {

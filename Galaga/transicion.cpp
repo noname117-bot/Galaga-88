@@ -68,7 +68,6 @@ void Transition::Update() {
 
     transitionTime += GetFrameTime();
 
-    // Animación del fondo
     backgroundFrameCounter += GetFrameTime();
     if (backgroundFrameCounter >= backgroundFrameTime) {
         backgroundFrameCounter -= backgroundFrameTime;
@@ -76,19 +75,16 @@ void Transition::Update() {
     }
 
     if (currentPhase == 1) {
-        // Reproducir sonido al inicio
         if (transitionTime <= 0.05) {
             PlaySound(snd_animation);
         }
 
-        // Después de 1 segundo, mostrar el anuncio START
         if (transitionTime >= 1.0f && !announcementStarted) {
             showStartAnnouncement = true;
-            startAnnouncementTimer = startAnnouncementDuration; // Empezar countdown
+            startAnnouncementTimer = startAnnouncementDuration; 
             announcementStarted = true;
         }
 
-        // Si el anuncio está activo, hacer countdown
         if (showStartAnnouncement) {
             startAnnouncementTimer -= GetFrameTime();
             if (startAnnouncementTimer <= 0.0f) {
@@ -96,13 +92,11 @@ void Transition::Update() {
             }
         }
 
-        // Cuando el anuncio desaparece, pasar directamente a la siguiente fase
         if (announcementStarted && !showStartAnnouncement) {
             currentPhase = 2;
         }
     }
     else if (currentPhase == 2) {
-        // La nave empieza a subir
         shipY -= 250 * GetFrameTime();
         if (shipY <= 400) {
             shipY = 400;
@@ -110,7 +104,6 @@ void Transition::Update() {
         }
     }
     else if (currentPhase == 3) {
-        // El fondo empieza a moverse
         backgroundY += 200 * GetFrameTime();
 
         if (backgroundY >= 300) {
@@ -118,7 +111,6 @@ void Transition::Update() {
         }
     }
     else if (currentPhase == 4) {
-        // Animación de la nave y movimiento del fondo
         frameCounter += GetFrameTime();
         if (frameCounter >= frameTime) {
             frameCounter = 0;
@@ -149,7 +141,6 @@ void Transition::Draw() {
         DrawTexturePro(shipSprite, sourceRect, { static_cast<float>(GetScreenWidth()) / 2, shipY, 128.0f, 128.0f }, { 64.0f, 64.0f }, 0.0f, WHITE);
     }
 
-    // Dibujar UI del score completa
     DrawScoreUI();
 
     if (showStartAnnouncement) {
@@ -160,10 +151,8 @@ void Transition::Draw() {
 }
 
 void Transition::DrawScoreUI() {
-    // Dibujar el sprite "SCORE"
     DrawTextureEx(score, { 70, 30 }, 0.0f, 4.0f, WHITE);
 
-    // Configuración para dibujar los números del puntaje
     Vector2 scorePosition = { 70, 30 };
     float scoreWidth = 120;
 

@@ -14,6 +14,8 @@ enum GameState {
     STATE_MENU,
     STATE_TRANSITION,
     STATE_GAMEPLAY,
+    STATE_BOSS_DEATH_ANIMATION,
+    STATE_WIN,
     STATE_GAMEOVER_ANNOUNCEMENT,
     STATE_GAMEOVER
 };
@@ -28,10 +30,11 @@ int main() {
     Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
 
     Texture2D background_image = LoadTexture("resources/screens/bg_stage1_2.png");
-    Texture2D background_level2 = LoadTexture("resources/screens/Boss1_background.png");
+    Texture2D background_level3 = LoadTexture("resources/screens/Boss1_background.png");
 
     Texture2D gameOverScreen = LoadTexture("resources/screens/gameover1.png");
     Texture2D gameOverScreen2 = LoadTexture("resources/screens/gameover2.png");
+    Texture2D gameOverScreen3 = LoadTexture("resources/screens/gameover3.png");
 
     Texture2D gameOverAnnouncement = LoadTexture("resources/UI/game_over.png");
 
@@ -39,6 +42,7 @@ int main() {
     Texture2D stage1Announcement = LoadTexture("resources/UI/stage1.png");
 
     Texture2D introAnimation = LoadTexture("resources/screens/intro-sheet.png");
+    Texture2D winScreen = LoadTexture("resources/screens/credits.png");
 
     int frameWidth = introAnimation.width / 2;
     int frameHeight = introAnimation.height;
@@ -62,6 +66,20 @@ int main() {
     const float gameOverAnimationDuration = 1.0f; 
     Vector2 gameOverStartPos = { 0, 0 }; 
     Vector2 gameOverEndPos = { 0, 0 };
+
+
+    float winTimer = 0.0f;
+    const float winDuration = 20.0f;
+
+    float bossDeathAnimationTimer = 0.0f;
+    const float bossDeathAnimationDuration = 5.5f;
+    Vector2 shipCenterPosition;
+    Vector2 shipStartPosition;
+    Vector2 shipEndPosition;
+    float backgroundOffset = 0.0f;
+    bool shipMovingToCenter = true;
+    bool shipMovingUp = false;
+    bool shipDisappeared = false;
 
     Game game;
     Menu menu;
@@ -148,15 +166,38 @@ int main() {
                 gameOverAnimationProgress = 0.0f;
                 gameOverEndPos.x = (GetScreenWidth() - gameOverAnnouncement.width * scale) / 2;
                 gameOverEndPos.y = (GetScreenHeight() - gameOverAnnouncement.height * scale) / 2;
-                gameOverStartPos.x = gameOverEndPos.x; 
+                gameOverStartPos.x = gameOverEndPos.x;
                 gameOverStartPos.y = -gameOverAnnouncement.height * scale;
             }
             else if (game.areEnemiesDefeated() && stageAnnouncementTimer <= 0.0f) {
-                game.nextLevel(); 
-                ui.UpdateLevel(game.getCurrentLevel());
-                stageAnnouncementTimer = stageAnnouncementDuration; 
-                game.getSpaceship().LockInCenter(1.0f);
+                int currentLevel = game.getCurrentLevel();
+
+                if (currentLevel >= 3) {
+                    currentState = STATE_BOSS_DEATH_ANIMATION;
+                    bossDeathAnimationTimer = 0.0f;
+
+                    shipStartPosition = game.getSpaceship().position;
+                    shipCenterPosition = { (float)GetScreenWidth() / 2.0f - 32.0f, shipStartPosition.y };
+                    shipEndPosition = { shipCenterPosition.x, -100.0f };
+
+                    backgroundOffset = 0.0f;
+                    shipMovingToCenter = true;
+                    shipMovingUp = false;
+                    shipDisappeared = false;
+                }
+                else {
+                    game.nextLevel();
+                    ui.UpdateLevel(game.getCurrentLevel());
+
+                    if (game.getCurrentLevel() == 2) {
+                        stageAnnouncementTimer = stageAnnouncementDuration;
+                    }
+
+                    game.getSpaceship().LockInCenter(1.0f);
+                }
             }
+
+
             game.Update();
 
             int currentLives = game.getSpaceship().lives;
@@ -179,11 +220,15 @@ int main() {
             }
 
           
-            if (game.getCurrentLevel() == 1) {
+            int currentLevel = game.getCurrentLevel();
+            if (currentLevel == 1) {
                 DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
             }
-            else {
-                DrawTextureEx(background_level2, position, 0.0f, scale, WHITE);
+            else if (currentLevel == 2) {
+                DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
+            }
+            else { 
+                DrawTextureEx(background_level3, position, 0.0f, scale, WHITE);
             }
 
             game.Draw();
@@ -201,13 +246,13 @@ int main() {
                 }
             }
 
-            if (stageAnnouncementTimer > 0.0f) {
-                Vector2 stagePos = { (GetScreenWidth() - stage2Announcement.width * scale) / 2,  (GetScreenHeight() - stage2Announcement.height * scale) / 2  };
+            if (stageAnnouncementTimer > 0.0f && game.getCurrentLevel() == 2) {
+                Vector2 stagePos = { (GetScreenWidth() - stage2Announcement.width * scale) / 2,  (GetScreenHeight() - stage2Announcement.height * scale) / 2 };
                 DrawTextureEx(stage2Announcement, stagePos, 0.0f, scale, WHITE);
 
                 stageAnnouncementTimer -= GetFrameTime();
                 if (stageAnnouncementTimer <= 0.0f) {
-                    stageAnnouncementTimer = 0.0f; 
+                    stageAnnouncementTimer = 0.0f;
                 }
             }
 
@@ -218,15 +263,73 @@ int main() {
             }
             break;
         }
+        case STATE_BOSS_DEATH_ANIMATION:
+        {
+            bossDeathAnimationTimer += GetFrameTime();
+            float progress = bossDeathAnimationTimer / bossDeathAnimationDuration;
+
+            if (bossDeathAnimationTimer < 1.5f && shipMovingToCenter) {
+                float centerProgress = bossDeathAnimationTimer / 1.5f;
+                float easedProgress = centerProgress * centerProgress * (3.0f - 2.0f * centerProgress);
+
+                game.getSpaceship().position.x = shipStartPosition.x + (shipCenterPosition.x - shipStartPosition.x) * easedProgress;
+                game.getSpaceship().position.y = shipStartPosition.y + (shipCenterPosition.y - shipStartPosition.y) * easedProgress;
+            }
+            else if (bossDeathAnimationTimer >= 1.5f && bossDeathAnimationTimer < 5.0f) {
+                if (shipMovingToCenter) {
+                    shipMovingToCenter = false;
+                    shipMovingUp = true;
+                }
+                float upProgress = (bossDeathAnimationTimer - 1.5f) / 3.5f;
+                float easedUpProgress = upProgress * upProgress * (3.0f - 2.0f * upProgress);
+
+                game.getSpaceship().position.y = shipCenterPosition.y + (shipEndPosition.y - shipCenterPosition.y) * easedUpProgress;
+
+                backgroundOffset = 928.0f * easedUpProgress; 
+            }
+            else if (bossDeathAnimationTimer >= 5.0f) {
+                shipDisappeared = true;
+            }
+            Vector2 backgroundPos = { position.x, position.y + backgroundOffset };
+            DrawTextureEx(background_level3, backgroundPos, 0.0f, scale, WHITE);
+
+            if (!shipDisappeared) {
+                game.getSpaceship().Draw();
+            }
+            ui.Draw();
+
+            if (bossDeathAnimationTimer >= bossDeathAnimationDuration) {
+                currentState = STATE_WIN;
+                winTimer = 0.0f;
+            }
+
+            break;
+        }
+        case STATE_WIN:
+        {
+            Vector2 winPos = { (GetScreenWidth() - winScreen.width * scale) / 2, (GetScreenHeight() - winScreen.height * scale) / 2 };
+            DrawTextureEx(winScreen, winPos, 0.0f, scale, WHITE);
+            winTimer += GetFrameTime();
+
+            if (winTimer >= winDuration || IsKeyPressed(KEY_SPACE)) {
+                currentState = STATE_GAMEOVER;
+                gameOverTimer = 0.0f;
+            }
+            break;
+        }
         case STATE_GAMEOVER_ANNOUNCEMENT: 
         {
             game.Update();
 
-            if (game.getCurrentLevel() == 1) {
+            int currentLevel = game.getCurrentLevel();
+            if (currentLevel == 1) {
+                DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
+            }
+            else if (currentLevel == 2) {
                 DrawTextureEx(background_image, position, 0.0f, scale, WHITE);
             }
             else {
-                DrawTextureEx(background_level2, position, 0.0f, scale, WHITE);
+                DrawTextureEx(background_level3, position, 0.0f, scale, WHITE);
             }
 
             game.Draw();
@@ -258,8 +361,12 @@ int main() {
             if (game.getCurrentLevel() == 1) {
                 currentGameOverScreen = gameOverScreen;
             }
-            else {
+            else if (game.getCurrentLevel()==2){
                 currentGameOverScreen = gameOverScreen2;
+            }
+            else {
+                currentGameOverScreen = gameOverScreen3;
+
             }
 
             Vector2 gameOverPos = { (GetScreenWidth() - gameOverScreen.width * scale) / 2, (GetScreenHeight() - gameOverScreen.height * scale) / 2 };
@@ -287,7 +394,7 @@ int main() {
     }
 
     UnloadTexture(background_image);
-    UnloadTexture(background_level2);
+    UnloadTexture(background_level3);
 
     UnloadTexture(intro);
     UnloadTexture(introAnimation);
@@ -296,8 +403,11 @@ int main() {
     UnloadTexture(stage2Announcement); 
 
     UnloadTexture(gameOverScreen);
-      UnloadTexture(gameOverScreen2);
+    UnloadTexture(gameOverScreen2);
+    UnloadTexture(gameOverScreen3);
     UnloadTexture(gameOverAnnouncement);
+
+    UnloadTexture(winScreen);
 
     CloseWindow();
     return 0;

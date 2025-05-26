@@ -49,13 +49,14 @@ public:
 
 	bool isGameOver;
 	
+	Vector2 position;// position of the spaceship
+
 	void Reset();
 	bool isLocked;
 	float lockTimer;
 
 private:
 	Texture2D image;
-	Vector2 position;// position of the spaceship
 	double lastFiretime;
 	double reloadTime; // tiempo en el que se vuelven a recargar las balas 
 	int bulletCount; // contador de balas

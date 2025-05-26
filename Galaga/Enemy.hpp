@@ -1,73 +1,100 @@
 #pragma once
-#include <raylib.h>
-//#include "enemy_bullet.hpp"
-#include <vector>
+#include "raylib.h"
 
-
-
-enum {
-	ENTERING = 0,
-	INFINITI = 1,
-	EXITING = 2,
-	FORMATION = 3
-};
-
-enum {
-	RED_PATH = 0,
-	ORANGE_PATH = 1
-};
-
-class Enemy {
-public:
-	
-    Enemy(int type, Vector2 position, int pathType, bool startFromLeft);
-
-    void Update();
-    void Draw();
-    int GetType();
-   
-    Rectangle getRect();
-    
-
-    // Variables públicas
-    int type;
-    void Activate(); // Activar el enemigo
-    bool IsActive(); // Verificar si está activo
-    bool IsInFormation();
-    Vector2 getPosition() const {  return position; }
-	int life; // Vida del enemigo
-    void CalculateFormationOffset();
-    Texture2D explosion_spriteSheet;
-    bool isExploding;          // Indica si la explosión está activa
-    int explosionFrame;        // Fotograma actual de la explosión
-    float explosionFrameTime;  // Tiempo entre fotogramas
-    float explosionTimer;      // Temporizador para cambiar de fotograma
-    Vector2 explosionPosition; // Posición de la explosión
-    bool dead; 
-
+class Enemy
+{
 private:
+    Texture2D image;
+    Texture2D image2; // Para animación del boss
     Vector2 position;
-    Vector2 finalPosition;
     int pathType;
     bool startFromLeft;
-    int currentPhase;
-    float infinityProgress;
-    float moveSpeed;
-    Texture2D image;
-    Texture2D image2;
     bool active;
 
-    float formationPhase;
-    float formationProgress;
-    float formationPosition;
-    Vector2 formationOffset;
+    // Variables de explosión
+    Texture2D explosion_spriteSheet;
+    int explosionFrame;
+    int explosionFrameCount; // NUEVA VARIABLE: número de frames en el spritesheet
+    float explosionFrameTime;
+    float explosionTimer;
 
-    bool movingRight;
-    float formationMoveTimer;
-
-
+    // Variables de animación
     int currentFrame;
     int frameCounter;
     bool animation;
 
+    // Variables de movimiento
+    int currentPhase;
+    float infinityProgress;
+    float moveSpeed;
+    bool movingRight;
+    int formationMoveTimer;
+    int formationPhase;
+    float formationProgress;
+    int formationPosition;
+    Vector2 formationOffset;
+
+    // Variables de disparo
+    bool canShoot = true;
+    float shootTimer = 0.0f;
+    float shootCooldown = 2.0f; // 2 segundos entre disparos
+    double lastShotTime = 0.0;
+
+    bool isInSpecialMovement;           // Si está haciendo movimiento especial
+    int specialMovementPhase;           // 0=circular, 1=bajando, 2=subiendo, 3=regresando
+    float specialMovementTimer;         // Timer para controlar el movimiento
+    Vector2 originalFormationPosition;  // Posición original en formación
+    Vector2 circleCenter;              // Centro del círculo para el movimiento
+    float circleRadius;                // Radio del círculo
+    float circleAngle;                 // Ángulo actual en el círculo
+    bool movingClockwise;              // Dirección del movimiento circular
+    float specialMoveSpeed;
+
+public:
+    Enemy(int type, Vector2 position, int pathType = 0, bool startFromLeft = true);
+
+    void Activate();
+    bool IsActive();
+    bool IsInFormation();
+    void CalculateFormationOffset();
+    void Update();
+    void Draw();
+    void MoveInFormation(float deltaX, float deltaY);
+
+    void StartSpecialMovement();       // Iniciar movimiento especial
+    bool IsInSpecialMovement() const;  // Verificar si está en movimiento especial
+    void UpdateSpecialMovement();      // Actualizar lógica del movimiento especial
+    Vector2 GetOriginalPosition() const; // Obtener posición original
+    void SetOriginalPosition(Vector2 pos);
+
+    bool CanShoot();
+    void SetShot();
+    Vector2 GetShootPosition();
+
+    int GetType();
+    int type;
+
+    bool dead;
+    int life;
+    bool isExploding;
+
+
+    Rectangle getRect();
+    Vector2 getPosition() { return position; }
+    int GetLife() { return life; }
+    bool IsDead() { return dead; }
+    bool IsExploding() { return isExploding; }
+
+    Vector2 finalPosition;
+    Vector2 explosionPosition;
+
+    void TakeDamage(int damage = 1) {
+        life -= damage;
+        if (life <= 0) {
+            isExploding = true;
+            explosionPosition = position;
+            explosionFrame = 0;
+            explosionTimer = 0.0f;
+        }
+    }
 };

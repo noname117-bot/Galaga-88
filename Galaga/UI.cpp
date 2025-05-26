@@ -43,10 +43,11 @@ void GameUI::DrawScore() {
         DrawTextureEx(life1, position2, 0.0f, scale, WHITE);
     }
 
-    DrawTextureEx(level, position3, 0.0f, scale, WHITE);
-
-    if (currentLevel == 2) {
-        DrawTextureEx(level2, position4, 0.0f, scale, WHITE);
+    if (currentLevel < 3) {
+        DrawTextureEx(level, position3, 0.0f, scale, WHITE);
+        if (currentLevel == 2) {
+            DrawTextureEx(level2, position4, 0.0f, scale, WHITE);
+        }
     }
 }
 

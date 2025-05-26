@@ -1,14 +1,1 @@
-﻿  Enemy.cpp
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(159,31): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(204,35): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,45): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,45): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,66): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,66): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,78): warning C4838: la conversión de 'int' en 'float' requiere una conversión de restricción
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(278,78): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(324,57): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\Enemy.cpp(324,27): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-  Galaga.vcxproj -> C:\Users\kenne\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe
-  "pwsh.exe" no se reconoce como un comando interno o externo,
-  programa o archivo por lotes ejecutable.
+﻿  Galaga.vcxproj -> C:\Users\monts\Documents\GitHub\Galaga-88\Galaga\x64\Debug\Galaga.exe

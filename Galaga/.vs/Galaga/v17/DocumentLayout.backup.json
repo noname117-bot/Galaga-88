@@ -1,50 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\",
+  "WorkspaceRootPath": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:Enemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:Enemy.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:space.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:space.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:game.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:Enemy.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:game.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:transicion.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:Enemy.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:transicion.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\enemy_bullet.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:enemy_bullet.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:UI.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:UI.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CC1CDD7B-BDBC-47C3-AD1D-972EF9AF6CAC}|Galaga.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,146 +34,80 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAAB4AAABRAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIwBAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-03-03T16:27:41.907Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Enemy.hpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp",
-              "RelativeDocumentMoniker": "Enemy.hpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp",
-              "RelativeToolTip": "Enemy.hpp",
-              "ViewState": "AgIAACkAAAAAAAAAAAAvwEcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-25T05:09:02.714Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Enemy.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp",
-              "RelativeDocumentMoniker": "Enemy.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp*",
-              "RelativeToolTip": "Enemy.cpp*",
-              "ViewState": "AgIAAA0BAAAAAAAAAAAAACIBAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-05-25T05:09:00.716Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "transicion.hpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.hpp",
-              "RelativeDocumentMoniker": "transicion.hpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.hpp",
-              "RelativeToolTip": "transicion.hpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-24T22:49:31.99Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "transicion.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.cpp",
-              "RelativeDocumentMoniker": "transicion.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\transicion.cpp",
-              "RelativeToolTip": "transicion.cpp",
-              "ViewState": "AgIAABwAAAAAAAAAAAAIwEEAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-05-24T21:34:28.89Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "UI.hpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.hpp",
-              "RelativeDocumentMoniker": "UI.hpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.hpp",
-              "RelativeToolTip": "UI.hpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-18T21:11:27.644Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "UI.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.cpp",
-              "RelativeDocumentMoniker": "UI.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\UI.cpp",
-              "RelativeToolTip": "UI.cpp",
-              "ViewState": "AgIAABIAAAAAAAAAAAAwwC8AAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-05-18T20:58:28.437Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "game.hpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp",
-              "RelativeDocumentMoniker": "game.hpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp",
-              "RelativeToolTip": "game.hpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-03-03T18:52:49.442Z",
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "game.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp",
-              "RelativeDocumentMoniker": "game.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp",
-              "RelativeToolTip": "game.cpp",
-              "ViewState": "AgIAANgAAAAAAAAAAAAvwN8AAAAfAAAAAAAAAA==",
+              "Title": "enemy_bullet.cpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\enemy_bullet.cpp",
+              "RelativeDocumentMoniker": "enemy_bullet.cpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\enemy_bullet.cpp",
+              "RelativeToolTip": "enemy_bullet.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-04-25T06:58:17.939Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "space.hpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.hpp",
-              "RelativeDocumentMoniker": "space.hpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.hpp",
-              "RelativeToolTip": "space.hpp",
-              "ViewState": "AgIAACsAAAAAAAAAAAAvwEMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-05-18T21:13:31.472Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-26T14:41:55.222Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "space.cpp",
-              "DocumentMoniker": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.cpp",
-              "RelativeDocumentMoniker": "space.cpp",
-              "ToolTip": "C:\\Users\\kenne\\Documents\\GitHub\\Galaga-88\\Galaga\\space.cpp",
-              "RelativeToolTip": "space.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Title": "Enemy.hpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp",
+              "RelativeDocumentMoniker": "Enemy.hpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.hpp",
+              "RelativeToolTip": "Enemy.hpp",
+              "ViewState": "AgIAACQAAAAAAAAAAAAkwEQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-05-25T05:09:02.714Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Enemy.cpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp",
+              "RelativeDocumentMoniker": "Enemy.cpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\Enemy.cpp",
+              "RelativeToolTip": "Enemy.cpp",
+              "ViewState": "AgIAAGEBAAAAAAAAAAAkwHUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-05-18T21:13:24.628Z",
+              "WhenOpened": "2025-05-25T05:09:00.716Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "game.hpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp",
+              "RelativeDocumentMoniker": "game.hpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.hpp",
+              "RelativeToolTip": "game.hpp",
+              "ViewState": "AgIAACAAAAAAAAAAAAArwC8AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-03-03T18:52:49.442Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "game.cpp",
+              "DocumentMoniker": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp",
+              "RelativeDocumentMoniker": "game.cpp",
+              "ToolTip": "C:\\Users\\monts\\Documents\\GitHub\\Galaga-88\\Galaga\\game.cpp",
+              "RelativeToolTip": "game.cpp",
+              "ViewState": "AgIAAJkCAAAAAAAAAAAkwJwCAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-25T06:58:17.939Z",
               "EditorCaption": ""
             }
           ]
