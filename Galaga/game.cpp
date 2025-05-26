@@ -16,7 +16,7 @@ Game::Game()
     enemiesCanAppear = false;
 
     globalShootTimer = 0.0f;
-    timeBetweenShots = 1.0f;  // 1.2 segundos entre cada disparo (ajustable)
+    timeBetweenShots = 1.0f;  // 1.2 segundos entre cada disparo 
     currentShooterIndex = 0;
 
     specialMovementTimer = 0.0f;
@@ -37,7 +37,6 @@ Game::Game()
     cheat = false;
     levelCompleted = false;
 
-    // Variables para el movimiento sincronizado de la formación
     formationMoveTimer = 0.0f;
     formationMovingRight = true;
 }
@@ -54,25 +53,23 @@ Game::~Game()
 
 void Game::Update()
 {
-    // CONTROLAR EL ANUNCIO DEL NIVEL Y APARICIÓN DE ENEMIGOS
     if (showingLevelAnnouncement) {
         levelAnnouncementTimer += GetFrameTime();
 
-        // Después de 2 segundos, permitir que aparezcan los enemigos
+       
         if (levelAnnouncementTimer >= 2.0f) {
             showingLevelAnnouncement = false;
             enemiesCanAppear = true;
         }
 
-        // Durante el anuncio, no actualizar enemigos
+       
         spaceship.Update();
         for (auto& bullet : spaceship.bullets) {
             bullet.Update();
         }
-        return; // Salir temprano, no procesar enemigos todavía
+        return;
     }
 
-    // ACTIVAR TODOS LOS ENEMIGOS A LA VEZ - SOLO SI YA PUEDEN APARECER
     if (!enemies.empty() && enemiesCanAppear) {
         bool allActivated = true;
         for (auto& enemy : enemies) {
@@ -97,7 +94,6 @@ void Game::Update()
         bullet.Update();
     }
 
-    // Actualizar enemigos individualmente - SOLO SI PUEDEN APARECER
     if (enemiesCanAppear) {
         for (auto& enemy : enemies) {
             if (enemy.IsActive() || enemy.isExploding == true) {
@@ -105,13 +101,10 @@ void Game::Update()
             }
         }
 
-        // CONTROLAR MOVIMIENTO SINCRONIZADO DE LA FORMACIÓN
         UpdateFormation();
 
-        // ? NUEVO: CONTROLAR MOVIMIENTOS ESPECIALES
         UpdateSpecialMovements();
 
-        // CONTROLAR DISPAROS ALTERNADOS
         UpdateEnemyShooting();
     }
 
@@ -129,14 +122,6 @@ void Game::Update()
         }
     }
 
-    // ? COMENTAR O ELIMINAR LA FUNCIÓN ANTIGUA DE DISPAROS
-    // Solo procesar disparos enemigos si pueden aparecer
-    // if (enemiesCanAppear) {
-    //     enemies_shot(); // ? COMENTAR ESTA LÍNEA - YA NO LA USAMOS
-    //     if (cheat == false) CheckForEnemyBulletCollisions();
-    // }
-
-    // ? MANTENER SOLO LA VERIFICACIÓN DE COLISIONES
     if (enemiesCanAppear && cheat == false) {
         CheckForEnemyBulletCollisions();
     }
@@ -167,12 +152,10 @@ void Game::Update()
     }
 }
 
-// ? NUEVA FUNCIÓN: Controlar el sistema de disparos alternados
 void Game::UpdateEnemyShooting()
 {
     globalShootTimer += GetFrameTime();
 
-    // Solo permitir un disparo cada timeBetweenShots segundos
     if (globalShootTimer >= timeBetweenShots) {
 
         // Buscar el siguiente enemigo que pueda disparar
@@ -202,18 +185,15 @@ void Game::UpdateEnemyShooting()
                     enemy_bullets.push_back(enemy_Bullet({ shootPos.x, shootPos.y - 180 }, -6));
                 }
                 else {
-                    // Enemigos normales: una sola bala
                     enemy_bullets.push_back(enemy_Bullet(shootPos, -6));
                 }
 
-                // Marcar que el enemigo disparó
                 enemies[currentShooterIndex].SetShot();
 
                 shotFired = true;
-                globalShootTimer = 0.0f; // Reiniciar temporizador global
+                globalShootTimer = 0.0f; 
             }
 
-            // Pasar al siguiente enemigo
             currentShooterIndex++;
             if (currentShooterIndex >= enemies.size()) {
                 currentShooterIndex = 0;
@@ -224,10 +204,8 @@ void Game::UpdateEnemyShooting()
     }
 }
 
-// NUEVA FUNCIÓN PARA CONTROLAR EL MOVIMIENTO SINCRONIZADO
 void Game::UpdateFormation()
 {
-    // Contar cuántos enemigos están en formación (excluyendo los en movimiento especial)
     int enemiesInFormation = 0;
     for (auto& enemy : enemies) {
         if (enemy.IsInFormation() && !enemy.isExploding &&
@@ -250,10 +228,9 @@ void Game::UpdateFormation()
         float leftMost = 896.0f;
         float rightMost = 0.0f;
         float enemyWidth = 32.0f * 4.0f;
-        float rightMargin = 40.0f;
+        float rightMargin = -40.0f;
         float leftMargin = 20.0f;
 
-        // ? MODIFICAR PARA EXCLUIR ENEMIGOS EN MOVIMIENTO ESPECIAL
         for (auto& enemy : enemies) {
             if (enemy.IsInFormation() && !enemy.isExploding &&
                 enemy.GetType() != 4 && !enemy.IsInSpecialMovement()) {
@@ -274,7 +251,6 @@ void Game::UpdateFormation()
             }
         }
 
-        // ? APLICAR MOVIMIENTO SOLO A ENEMIGOS NO EN MOVIMIENTO ESPECIAL
         for (auto& enemy : enemies) {
             if (enemy.IsInFormation() && !enemy.isExploding &&
                 enemy.GetType() != 4 && !enemy.IsInSpecialMovement()) {
@@ -341,11 +317,9 @@ void Game::UpdateSpecialMovements()
 {
     specialMovementTimer += GetFrameTime();
 
-    // Verificar si es hora de activar un movimiento especial
     if (specialMovementTimer >= nextSpecialMoveTime) {
         TriggerRandomSpecialMovement();
 
-        // Reiniciar timer y establecer próximo tiempo aleatorio
         specialMovementTimer = 0.0f;
         nextSpecialMoveTime = minTimeBetweenSpecialMoves +
             (float)GetRandomValue(0, (int)((maxTimeBetweenSpecialMoves - minTimeBetweenSpecialMoves) * 10)) / 10.0f;
@@ -354,16 +328,13 @@ void Game::UpdateSpecialMovements()
 
 void Game::TriggerRandomSpecialMovement()
 {
-    // Obtener lista de enemigos que pueden hacer movimiento especial
     std::vector<int> availableEnemies = GetEnemiesInFormation();
 
     if (availableEnemies.empty()) return;
 
-    // Seleccionar un enemigo aleatorio
     int randomIndex = GetRandomValue(0, availableEnemies.size() - 1);
     int selectedEnemyIndex = availableEnemies[randomIndex];
 
-    // Activar movimiento especial
     enemies[selectedEnemyIndex].StartSpecialMovement();
 }
 
@@ -372,7 +343,6 @@ std::vector<int> Game::GetEnemiesInFormation()
     std::vector<int> formationEnemies;
 
     for (int i = 0; i < enemies.size(); i++) {
-        // Solo enemigos que están en formación, no el boss, no en movimiento especial, no explotando
         if (enemies[i].IsInFormation() &&
             enemies[i].GetType() != 4 &&
             !enemies[i].IsInSpecialMovement() &&
@@ -387,9 +357,16 @@ std::vector<int> Game::GetEnemiesInFormation()
 }
 
 void Game::Reset() {
+ 
     for (int i = 0; i < 10; i++)
     {
         UnloadTexture(scoreTextures[i]);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        char file[32];
+        sprintf_s(file, sizeof(file), "resources/UI/score/n%d.png", i);
+        scoreTextures[i] = LoadTexture(file);
     }
 
     currentLevel = 1;

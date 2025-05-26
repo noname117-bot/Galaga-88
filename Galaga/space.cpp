@@ -1,13 +1,11 @@
 #include "space.hpp"
 #include <iostream>
 
-
-
 Spaceship::Spaceship()
 {
 	snd_bullet = LoadSound("resources/sound_effects/effect_nullet_starship.wav");
 	lives = 3;
-	image = LoadTexture("resources/spaceship.png"); 
+	image = LoadTexture("resources/spaceship.png");
 	position.x = (GetScreenWidth() - image.width) / 2;
 	position.y = GetScreenHeight() - image.height - 150;
 	lastFiretime = 0.0;
@@ -19,17 +17,17 @@ Spaceship::Spaceship()
 	frameWidth = 16;
 	frameHeight = 32;
 	currentFrame = 0;
-	frameTime = 0.2f; 
+	frameTime = 0.2f;
 	frameCounter = 0.0f;
 	animation = false;
 	startY = 2;
 	startX = 2;
-	
+
 	livesTexture = LoadTexture("resources/spaceship.png");
 	isGameOver = false;
 	isExploding = false;
 	explosionFrame = 0;
-	explosionFrameTime = 0.1f; 
+	explosionFrameTime = 0.1f;
 	explosionTimer = 0.0f;
 	explosionPosition = { 0.0f, 0.0f };
 
@@ -41,35 +39,59 @@ Spaceship::Spaceship()
 	respawnAnimationTimer = 0.0f;
 	isRespawning = false;
 
-	respawnTexture = LoadTexture("resources/respawn.png");
-	respawnFrame = 0;
-	respawnFrameCounter = 0;
-	respawnFrameSpeed = 8;
-	respawnFrameWidth = respawnTexture.width / 2; 
-	respawnFrameHeight = respawnTexture.height;
+	blinkingSpriteSheet = LoadTexture("resources/respawn.png"); // Spritesheet con frames de parpadeo
+	blinkingFrame = 0;
+	blinkingFrameCounter = 0;
+	blinkingFrameSpeed = 10;
+	blinkingFrameWidth = blinkingSpriteSheet.width / 2; 
+	blinkingFrameHeight = blinkingSpriteSheet.height;
 
-	respawnStartPosition = { (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight() + 100.0f }; 
-	respawnTargetPosition = { (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight() - 100.0f };
+	respawnStartY = GetScreenHeight() + 50; // Comienza debajo de la pantalla
+	respawnTargetY = GetScreenHeight() - frameHeight * 4.0f - 80; // Posición final
+	respawnSpeed = 200.0f; 
 }
+
 Spaceship::~Spaceship()
 {
-	UnloadSound(snd_bullet); 
+	UnloadSound(snd_bullet);
 	UnloadTexture(image);
 	UnloadTexture(livesTexture);
-	UnloadTexture(respawnTexture);
+	UnloadTexture(blinkingSpriteSheet); 
 }
 
 void Spaceship::Reset() {
 	animation = false;
+	currentFrame = 0;
+	frameCounter = 0.0f;
+
 	UnloadTexture(livesTexture);
 	livesTexture = LoadTexture("resources/spaceship.png");
+
+	UnloadTexture(blinkingSpriteSheet);
+	blinkingSpriteSheet = LoadTexture("resources/respawn.png");
+	state = ALIVE;
+	isRespawning = false;
+	blinkingFrame = 0;
+	blinkingFrameCounter = 0;
+	respawnTimer = 0.0f;
+	respawnAnimationTimer = 0.0f;
+
+	isExploding = false;
+	explosionFrame = 0;
+	explosionTimer = 0.0f;
+
+	position.x = (GetScreenWidth() - image.width * 4.0f) / 2;
+	position.y = GetScreenHeight() - image.height * 4.0f - 150;
+
+	isLocked = false;
+	lockTimer = 0.0f;
+	lives = 3; 
 }
 
 void Spaceship::Draw()
 {
-
 	if (state == RESPAWNING) {
-		DrawRespawn();
+		DrawBlinkingRespawn();
 		return;
 	}
 
@@ -77,18 +99,16 @@ void Spaceship::Draw()
 
 	if (!animation)
 	{
-		int frameX = startX + currentFrame * (frameWidth + 4); 
+		int frameX = startX + currentFrame * (frameWidth + 4);
 
 		Rectangle sourceRect = { frameX, startY, frameWidth, frameHeight };
-		Rectangle destRect = { position.x, position.y, frameWidth * 4, frameHeight * 4 }; 
+		Rectangle destRect = { position.x, position.y, frameWidth * 4, frameHeight * 4 };
 
 		DrawTexturePro(spriteSheet, sourceRect, destRect, { 0, 0 }, 0.0f, WHITE);
 	}
-	else { 
-		
-		
+	else {
 		if (isExploding) {
-			int frameWidth = explosion_spriteSheet.width / 8; 
+			int frameWidth = explosion_spriteSheet.width / 8;
 			int frameHeight = explosion_spriteSheet.height;
 			Rectangle sourceRect = { frameWidth * explosionFrame, 0, frameWidth, frameHeight };
 			Rectangle destRect = { explosionPosition.x, explosionPosition.y, frameWidth * 4.0f, frameHeight * 4.0f };
@@ -101,9 +121,9 @@ void Spaceship::Draw()
 			}
 		}
 	}
+}
 
-}	
-void Spaceship::MoveLeft()	
+void Spaceship::MoveLeft()
 {
 	position.x -= 4;
 	if (position.x < 0)
@@ -111,6 +131,7 @@ void Spaceship::MoveLeft()
 		position.x = 0;
 	}
 }
+
 void Spaceship::MoveRight()
 {
 	position.x += 4;
@@ -118,23 +139,20 @@ void Spaceship::MoveRight()
 	if (position.x + scaleWidth > GetScreenWidth()) {
 		position.x = GetScreenWidth() - scaleWidth;
 	}
-
 }
+
 void Spaceship::FireLaser()
 {
-	
-	if (bulletCount <2 && GetTime() - lastFiretime >= 0.20)// el 0.20 es la diferencia de segundos entre la primera y la segunda bala
+	if (bulletCount < 2 && GetTime() - lastFiretime >= 0.20)
 	{
-		if(IsKeyDown(KEY_X))
+		if (IsKeyDown(KEY_X))
 		{
-			PlaySound(snd_bullet); // Reproducir el sonido del disparo
+			PlaySound(snd_bullet);
 			bullets.push_back(Bullet({ position.x + (image.width * 4.0f / 2) - 2, position.y }, -6));
-			
+
 			bulletCount++;
 			lastFiretime = GetTime();
-			
 		}
-	
 	}
 
 	if (bulletCount >= 2 && GetTime() - lastFiretime >= reloadTime)
@@ -143,15 +161,14 @@ void Spaceship::FireLaser()
 	}
 }
 
-void Spaceship::Update() 
+void Spaceship::Update()
 {
-
 	if (state == RESPAWNING) {
-        UpdateRespawn();
-        return; 
-    }
-    
-    if (state != ALIVE) return;
+		UpdateBlinkingRespawn();
+		return;
+	}
+
+	if (state != ALIVE) return;
 
 	if (isLocked) {
 		lockTimer -= GetFrameTime();
@@ -173,18 +190,6 @@ void Spaceship::Update()
 	// Disparo (permitir disparo incluso si está bloqueada)
 	if (isExploding == false && lives > -1) FireLaser();
 
-	if (IsKeyDown(KEY_LEFT)) {
-		MoveLeft();
-	}
-	if (IsKeyDown(KEY_RIGHT)) {
-		MoveRight();
-	}
-
-	// Disparo
-	if (isExploding == false && lives > -1) FireLaser();
-
-
-
 	if (!animation)
 	{
 		frameCounter += GetFrameTime();
@@ -194,15 +199,15 @@ void Spaceship::Update()
 			frameCounter = 0;
 			currentFrame++;
 
-			if (currentFrame >= 4) // Hay 4 frames después de la nave original
+			if (currentFrame >= 4)
 			{
 				animation = true;
-				currentFrame = 3; // Se queda en el último frame
+				currentFrame = 3;
 			}
 		}
 	}
 
-	//  la animación de la explosión
+	// Animación de la explosión
 	if (isExploding) {
 		explosionTimer += GetFrameTime();
 		if (explosionTimer >= explosionFrameTime) {
@@ -210,25 +215,14 @@ void Spaceship::Update()
 			explosionFrame++;
 
 			if (explosionFrame >= 8) {
-				explosionFrame = 0;			
+				explosionFrame = 0;
 				isExploding = false;
 				lives--;
 
-			
-
 				if (lives > 0)
 				{
-					animation = false;
-					currentFrame = 0;
-					frameCounter = 0.0f;
-
-					position.x = (GetScreenWidth() - frameWidth * 4.0f) / 2; 
-					position.y = GetScreenHeight() - frameHeight * 4.0f - 80;
+					StartBlinkingRespawn(); 
 				}
-				
-				
-				
-
 			}
 		}
 	}
@@ -240,50 +234,58 @@ void Spaceship::LockInCenter(float duration) {
 	position.x = (GetScreenWidth() - frameWidth * 4.0f) / 2;
 }
 
-void Spaceship::StartRespawn() {
+void Spaceship::StartBlinkingRespawn() {
 	if (lives > 0) {
 		state = RESPAWNING;
 		respawnTimer = 0.0f;
-		respawnAnimationTimer = 0.0f;
-		respawnFrame = 0;
-		respawnFrameCounter = 0;
-		position = respawnStartPosition;
+		blinkingFrame = 0;
+		blinkingFrameCounter = 0;
+
+		position.x = (GetScreenWidth() - frameWidth * 4.0f) / 2;
+		position.y = respawnStartY;
+
 		isRespawning = true;
 	}
 }
 
-void Spaceship::UpdateRespawn() {
+void Spaceship::UpdateBlinkingRespawn() {
 	if (state != RESPAWNING) return;
 
 	respawnTimer += GetFrameTime();
-	respawnFrameCounter++;
-	if (respawnFrameCounter >= (60 / respawnFrameSpeed)) {
-		respawnFrameCounter = 0;
-		respawnFrame = (respawnFrame + 1) % 2;
+
+	blinkingFrameCounter++;
+	if (blinkingFrameCounter >= (60 / blinkingFrameSpeed)) {
+		blinkingFrameCounter = 0;
+		blinkingFrame = (blinkingFrame + 1) % 2; // Alternar entre frame 0 y 1
 	}
 
-	float animationDuration = 2.0f;
-	if (respawnTimer < animationDuration) {
-		float progress = respawnTimer / animationDuration;
-		position.y = respawnStartPosition.y + (respawnTargetPosition.y - respawnStartPosition.y) * progress;
-		position.x = respawnTargetPosition.x; 
-	}
-	else {
-		position = respawnTargetPosition;
+	position.y -= respawnSpeed * GetFrameTime();
+
+	if (position.y <= respawnTargetY) {
+		position.y = respawnTargetY;
 		state = ALIVE;
 		isRespawning = false;
+
+		animation = true;      
+		currentFrame = 3;      
+		frameCounter = 0.0f; 
 	}
 }
 
-void Spaceship::DrawRespawn() {
+void Spaceship::DrawBlinkingRespawn() {
 	if (state != RESPAWNING) return;
-	Rectangle sourceRec = {	respawnFrame * respawnFrameWidth,	0,	respawnFrameWidth,respawnFrameHeight};
-	Rectangle destRec = {	position.x - (respawnFrameWidth * 4) / 2,position.y - (respawnFrameHeight * 4) / 2,respawnFrameWidth * 4,	respawnFrameHeight * 4};
+
+
+	Rectangle sourceRec = {
+		blinkingFrame * blinkingFrameWidth,	0,	blinkingFrameWidth,blinkingFrameHeight	};
+
+	Rectangle destRec = {position.x,	position.y,	blinkingFrameWidth * 4,	blinkingFrameHeight * 4};
+
 	Vector2 origin = { 0, 0 };
-	DrawTexturePro(respawnTexture, sourceRec, destRec, origin, 0.0f, WHITE);
+	DrawTexturePro(blinkingSpriteSheet, sourceRec, destRec, origin, 0.0f, WHITE);
 }
 
 Rectangle Spaceship::getRect()
 {
-	return { position.x, position.y,float(image.width * 4), float(image.height * 4) };
+	return { position.x, position.y, float(image.width * 4), float(image.height * 4) };
 }

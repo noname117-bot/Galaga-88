@@ -27,6 +27,16 @@ int main() {
     SetTargetFPS(60);
     InitAudioDevice();
 
+
+    Music gameOverMusic = LoadMusicStream("resources/sound_effects/GameOverMusic.wav"); // Música para game over
+    Music creditsMusic = LoadMusicStream("resources/sound_effects/Credits.wav");   // Música para créditos
+
+    bool gameOverMusicPlaying = false;
+    bool creditsMusicPlaying = false;
+
+    SetMusicVolume(gameOverMusic,70.0f);
+    SetMusicVolume(creditsMusic, 70.0f);
+
     Texture2D intro = LoadTexture("resources/screens/intro-sheet.png");
 
     Texture2D background_image = LoadTexture("resources/screens/bg_stage1_2.png");
@@ -69,7 +79,7 @@ int main() {
 
 
     float winTimer = 0.0f;
-    const float winDuration = 20.0f;
+    const float winDuration = 30.0f;
 
     float bossDeathAnimationTimer = 0.0f;
     const float bossDeathAnimationDuration = 5.5f;
@@ -99,6 +109,13 @@ int main() {
     GameState currentState = STATE_INTRO;
 
     while (!WindowShouldClose()) {
+
+        if (gameOverMusicPlaying) {
+            UpdateMusicStream(gameOverMusic);
+        }
+        if (creditsMusicPlaying) {
+            UpdateMusicStream(creditsMusic);
+        }
         BeginDrawing();
         ClearBackground(BLACK);
 
@@ -138,6 +155,16 @@ int main() {
             break;
 
         case STATE_MENU:
+
+            if (gameOverMusicPlaying) {
+                StopMusicStream(gameOverMusic);
+                gameOverMusicPlaying = false;
+            }
+            if (creditsMusicPlaying) {
+                StopMusicStream(creditsMusic);
+                creditsMusicPlaying = false;
+            }
+
             if (!menu.SingleModeSelected()) {
                 menu.Update();
                 menu.Draw();
@@ -209,7 +236,7 @@ int main() {
                 if (game.getSpaceship().IsDead()) {
                     deathTimer += GetFrameTime();
                     if (deathTimer >= 1.0f) { 
-                        game.getSpaceship().StartRespawn();
+                        game.getSpaceship().DrawBlinkingRespawn();
                         deathTimer = 0.0f;
                     }
                 }
@@ -301,6 +328,11 @@ int main() {
             if (bossDeathAnimationTimer >= bossDeathAnimationDuration) {
                 currentState = STATE_WIN;
                 winTimer = 0.0f;
+
+                if (!creditsMusicPlaying) {
+                    PlayMusicStream(creditsMusic);
+                    creditsMusicPlaying = true;
+                }
             }
 
             break;
@@ -314,6 +346,15 @@ int main() {
             if (winTimer >= winDuration || IsKeyPressed(KEY_SPACE)) {
                 currentState = STATE_GAMEOVER;
                 gameOverTimer = 0.0f;
+
+                if (creditsMusicPlaying) {
+                    StopMusicStream(creditsMusic);
+                    creditsMusicPlaying = false;
+                }
+                if (!gameOverMusicPlaying) {
+                    PlayMusicStream(gameOverMusic);
+                    gameOverMusicPlaying = true;
+                }
             }
             break;
         }
@@ -351,6 +392,11 @@ int main() {
             if (gameOverAnnouncementTimer <= 0.0f) {
                 currentState = STATE_GAMEOVER;
                 gameOverTimer = 0.0f;
+
+                if (!gameOverMusicPlaying) {
+                    PlayMusicStream(gameOverMusic);
+                    gameOverMusicPlaying = true;
+                }
             }
             break;
         }
@@ -377,14 +423,25 @@ int main() {
                 menu = Menu();
                 menu.SetShowIntro(true);
                 menu.Reset();
+                
+                transition.Reset();
+
                 game = Game();
                 game.getSpaceship().Reset();
+                game.Reset();
+
                 ui.UpdateLives(3); 
                 ui.UpdateLevel(1);
                 lastLives = 3;
+                
                 FadingIn = false;
                 fadeAlpha = 1.0f;
                 showStage1Announcement = true;
+
+                if (gameOverMusicPlaying) {
+                    StopMusicStream(gameOverMusic);
+                    gameOverMusicPlaying = false;
+                }
             }
             break;
         }
@@ -392,6 +449,9 @@ int main() {
 
         EndDrawing();
     }
+
+    UnloadMusicStream(gameOverMusic);
+    UnloadMusicStream(creditsMusic);
 
     UnloadTexture(background_image);
     UnloadTexture(background_level3);

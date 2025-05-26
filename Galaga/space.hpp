@@ -25,9 +25,7 @@ public:
 	void FireLaser();
 	void Update();
 	void LockInCenter(float duration);
-	  void StartRespawn();
-    void UpdateRespawn();
-    void DrawRespawn();
+
     bool IsRespawning() const { return state == RESPAWNING; }
     bool IsDead() const { return state == DEAD; }
     bool IsAlive() const { return state == ALIVE; }
@@ -55,6 +53,26 @@ public:
 	bool isLocked;
 	float lockTimer;
 
+	Texture2D blinkingSpriteSheet;
+	int blinkingFrame;
+	int blinkingFrameCounter;
+	int blinkingFrameSpeed;
+	int blinkingFrameWidth;
+	int blinkingFrameHeight;
+	float respawnStartY;
+	float respawnTargetY;
+	float respawnSpeed;
+
+	SpaceshipState state;
+	float respawnTimer;
+	float respawnAnimationTimer;
+	bool isRespawning;
+
+
+	void StartBlinkingRespawn();
+	void UpdateBlinkingRespawn();
+	void DrawBlinkingRespawn();
+
 private:
 	Texture2D image;
 	double lastFiretime;
@@ -72,22 +90,9 @@ private:
 	bool animation;
 	int startX, startY;
 
-	SpaceshipState state;
-	float respawnTimer;
-	float respawnAnimationTimer;
-	Vector2 respawnStartPosition;
-	Vector2 respawnTargetPosition;
-	bool isRespawning;
 
-	// Para la animación del respawn
-	Texture2D respawnTexture;
-	int respawnFrame;
-	int respawnFrameCounter;
-	int respawnFrameSpeed;
-	int respawnFrameWidth;
-	int respawnFrameHeight;
 
-	// life
+
 	
 	Texture2D livesTexture;
 	

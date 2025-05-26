@@ -190,6 +190,33 @@ void Transition::DrawScoreUI() {
     }
 }
 
+void Transition::Reset() {
+    backgroundY = 0.0f;
+    currentBackgroundFrame = 0;
+
+    shipY = 800;
+    transitionTime = 0;
+    currentFrame = 3;
+    frameTime = 0.15f;
+    frameCounter = 0;
+
+    backgroundFrameCounter = 0;
+    backgroundFrameTime = 0.9f;
+    finished = false; 
+
+    delayTime = 1.0f;
+    waitBeforeMoving = true;
+
+    currentPhase = 1;
+    startAnnouncementTimer = 0.0f;
+    showStartAnnouncement = false;
+    announcementStarted = false;
+
+    sourceRect = { currentFrame * (shipSprite.width / 4), 0.0f, static_cast<float>(shipSprite.width) / 4, static_cast<float>(shipSprite.height) };
+
+   
+}
+
 void Transition::SetScore(int score) {
     currentScore = score;
 }

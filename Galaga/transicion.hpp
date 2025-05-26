@@ -47,6 +47,7 @@ public:
 	void Draw();
 	bool IsFinished()const;
 	void SetScore(int score);
-	
+	void Reset();
+
 	Sound snd_animation;
 };

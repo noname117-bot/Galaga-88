@@ -25,13 +25,21 @@ Enemy::Enemy(int type, Vector2 position, int pathType, bool startFromLeft) : typ
 
     isInSpecialMovement = false;
     specialMovementPhase = 0;
+    specialMovementPattern = 0; 
     specialMovementTimer = 0.0f;
     originalFormationPosition = { 0, 0 };
+    patternStartPosition = { 0, 0 };
+
     circleCenter = { 0, 0 };
-    circleRadius = 80.0f;  // Radio del círculo
+    circleRadius = 80.0f;  
     circleAngle = 0.0f;
     movingClockwise = true;
     specialMoveSpeed = 2.5f;
+
+    
+    sPatternProgress = 0.0f;
+    sPatternAmplitude = 120.0f; 
+    sPatternFrequency = 2.0f;
 
     switch (type)
     {
@@ -132,26 +140,27 @@ Vector2 Enemy::GetShootPosition()
 
 void Enemy::StartSpecialMovement()
 {
-    if (type == 4 || !IsInFormation()) return; // El boss no hace movimientos especiales
+    if (type == 4 || !IsInFormation()) return; 
 
     isInSpecialMovement = true;
-    specialMovementPhase = 0; // Fase circular
+    specialMovementPhase = 0; 
     specialMovementTimer = 0.0f;
 
-    // Guardar posición actual como posición original
     originalFormationPosition = position;
+    patternStartPosition = position;
 
-    // Configurar centro del círculo (un poco hacia adelante de la posición actual)
-    circleCenter.x = position.x + (image.width * 4.0f * 0.5f);
-    circleCenter.y = position.y + 60.0f;
+    specialMovementPattern = GetRandomValue(0, 1); 
 
-    // Ángulo inicial basado en la posición actual
-    circleAngle = 0.0f;
-
-    // Dirección aleatoria del círculo
-    movingClockwise = (GetRandomValue(0, 1) == 1);
+    if (specialMovementPattern == 0) {
+        circleCenter.x = position.x + (image.width * 4.0f * 0.5f);
+        circleCenter.y = position.y + 60.0f;
+        circleAngle = 0.0f;
+        movingClockwise = (GetRandomValue(0, 1) == 1);
+    }
+    else if (specialMovementPattern == 1) {
+        sPatternProgress = 0.0f;
+    }
 }
-
 bool Enemy::IsInSpecialMovement() const
 {
     return isInSpecialMovement;
@@ -175,46 +184,68 @@ void Enemy::UpdateSpecialMovement()
 
     switch (specialMovementPhase)
     {
-    case 0: // Fase circular
+    case 0: 
     {
-        // Incrementar ángulo
-        float angleSpeed = 3.0f; // Velocidad angular
-        if (movingClockwise) {
-            circleAngle += angleSpeed * GetFrameTime();
-        }
-        else {
-            circleAngle -= angleSpeed * GetFrameTime();
-        }
+        if (specialMovementPattern == 0) {
+            float angleSpeed = 3.0f;
+            if (movingClockwise) {
+                circleAngle += angleSpeed * GetFrameTime();
+            }
+            else {
+                circleAngle -= angleSpeed * GetFrameTime();
+            }
 
-        // Calcular nueva posición en el círculo
-        position.x = circleCenter.x + cos(circleAngle) * circleRadius;
-        position.y = circleCenter.y + sin(circleAngle) * circleRadius;
+            position.x = circleCenter.x + cos(circleAngle) * circleRadius;
+            position.y = circleCenter.y + sin(circleAngle) * circleRadius;
 
-        // Después de medio círculo, cambiar a fase de bajada
-        if (specialMovementTimer >= 1.5f) {
-            specialMovementPhase = 1;
-            specialMovementTimer = 0.0f;
+            if (specialMovementTimer >= 1.5f) {
+                specialMovementPhase = 1;
+                specialMovementTimer = 0.0f;
+            }
+        }
+        else if (specialMovementPattern == 1) {
+            sPatternProgress += GetFrameTime() * 0.8f; 
+
+            if (sPatternProgress >= 1.0f) {
+                specialMovementPhase = 1;
+                specialMovementTimer = 0.0f;
+                sPatternProgress = 1.0f;
+            }
+            else {
+                float sX = patternStartPosition.x + sin(sPatternProgress * PI * sPatternFrequency) * sPatternAmplitude;
+                float sY = patternStartPosition.y + sPatternProgress * 120.0f;
+
+                position.x = sX;
+                position.y = sY;
+            }
         }
         break;
     }
 
-    case 1: // Bajando por la pantalla
+    case 1: 
     {
-        position.y += specialMoveSpeed * 60.0f * GetFrameTime(); // Bajar rápido
+        if (specialMovementPattern == 1) {
+            sPatternProgress += GetFrameTime() * 1.2f;
 
-        // Si sale de la pantalla por abajo
-        if (position.y > 800.0f) {
+            float sX = patternStartPosition.x + sin(sPatternProgress * PI * sPatternFrequency) * sPatternAmplitude * 0.7f; 
+            position.x = sX;
+        }
+
+        position.y += specialMoveSpeed * 60.0f * GetFrameTime(); 
+
+        if (position.y > 900.0f) {
             specialMovementPhase = 2;
             specialMovementTimer = 0.0f;
-            // Reaparecer arriba
             position.y = -100.0f;
+            if (specialMovementPattern == 1) {
+                sPatternProgress = 0.0f;
+            }
         }
         break;
     }
 
-    case 2: // Subiendo/regresando
+    case 2: 
     {
-        // Moverse hacia la posición original
         Vector2 direction = {
             originalFormationPosition.x - position.x,
             originalFormationPosition.y - position.y
@@ -223,14 +254,12 @@ void Enemy::UpdateSpecialMovement()
         float distance = sqrt(direction.x * direction.x + direction.y * direction.y);
 
         if (distance < 10.0f) {
-            // Ha llegado a su posición original
             position = originalFormationPosition;
             isInSpecialMovement = false;
             specialMovementPhase = 0;
-            currentPhase = 1; // Volver a formación
+            currentPhase = 1; 
         }
         else {
-            // Normalizar dirección y mover
             direction.x /= distance;
             direction.y /= distance;
 
@@ -267,7 +296,7 @@ void Enemy::Update()
     {
         if (isInSpecialMovement) {
             UpdateSpecialMovement();
-            return; // No procesar movimiento normal
+            return; 
         }
 
         if (type == 4) { 
